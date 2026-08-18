@@ -1,0 +1,244 @@
+<%- include("../shopping/commonHeader/header") %>
+<%- include("../shopping/commonHeader/navbar2") %>
+
+<div class="checkout-page-wrapper">
+    <h1 class="page-header-title">Grocery Checkout Page</h1>
+
+    <div class="checkout-container">
+
+        <% if (typeof product !== 'undefined' && product) { %>
+
+            <!-- 1. SINGLE PRODUCT CHECKOUT (BUY NOW) -->
+            <div class="checkout-card">
+                <h2><%= product.title %></h2>
+                <% if (product.image) { %>
+                    <div class="image-box">
+                        <img src="<%= product.image %>" alt="<%= product.title %>">
+                    </div>
+                <% } %>
+                <p class="price">Price: ₹<%= Number(product.price).toLocaleString("en-IN") %></p>
+
+                <form action="/place-order" method="POST">
+                    <input type="hidden" name="checkoutType" value="single">
+                    <input type="hidden" name="productId" value="<%= product._id %>">
+                    <button type="submit" class="buy-now-btn">
+                        <i class="fa-solid fa-bolt"></i> Place Order / Buy Now
+                    </button>
+                </form>
+            </div>
+
+        <% } else if (typeof cart !== 'undefined' && cart && cart.length > 0) { %>
+
+            <!-- 2. FULL CART CHECKOUT -->
+            <div class="cart-checkout-list">
+                <% let totalAmount = 0; %>
+
+                <% cart.forEach(item => { %>
+                    <% 
+                        const prod = item.product || item;
+                        const price = prod && prod.price ? Number(prod.price) : 0;
+                        const qty = item.quantity ? Number(item.quantity) : 1;
+                        const itemSubtotal = price * qty;
+                        totalAmount += itemSubtotal;
+                    %>
+
+                    <% if (prod && prod.title) { %>
+                        <div class="cart-checkout-item">
+                            <div class="item-info">
+                                <h2><%= prod.title %></h2>
+                                <p class="qty-text">Quantity: <%= qty %></p>
+                                <p class="price-text">Price: ₹<%= itemSubtotal.toLocaleString("en-IN") %></p>
+                            </div>
+                            <% if (prod.image) { %>
+                                <div class="item-img-box">
+                                    <img src="<%= prod.image %>" alt="<%= prod.title %>">
+                                </div>
+                            <% } %>
+                        </div>
+                    <% } %>
+                <% }) %>
+
+                <hr class="divider">
+                <div class="total-summary-box">
+                    <h3>Total Amount: ₹<%= totalAmount.toLocaleString("en-IN") %></h3>
+                </div>
+
+                <form action="/place-order" method="POST">
+                    <input type="hidden" name="checkoutType" value="grocery">
+                    <input type="hidden" name="cartData" value='<%= JSON.stringify(cart) %>'>
+                    <input type="hidden" name="totalAmount" value="<%= totalAmount %>">
+                    <button type="submit" class="buy-now-btn">
+                        <i class="fa-solid fa-bag-shopping"></i> Place Order for All Items
+                    </button>
+                </form>
+            </div>
+
+        <% } else { %>
+
+            <!-- 3. FALLBACK STATE -->
+            <div class="no-product">
+                <i class="fa-solid fa-basket-shopping empty-icon"></i>
+                <p>No product selected for checkout.</p>
+                <a href="/grocery" class="back-link btn-link">Continue Shopping</a>
+            </div>
+
+        <% } %>
+
+        <br>
+        <a href="/groceryCart" class="back-link">
+            <i class="fa-solid fa-arrow-left"></i> Back to Grocery Cart
+        </a>
+    </div>
+</div>
+
+<style>
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.checkout-page-wrapper {
+    width: 90%;
+    max-width: 900px;
+    margin: 30px auto;
+}
+
+.page-header-title {
+    font-size: 28px;
+    color: #212529;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.checkout-container {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+.checkout-card h2 {
+    font-size: 20px;
+    color: #212529;
+    margin-bottom: 15px;
+}
+
+.cart-checkout-item {
+    border-bottom: 1px solid #edf2f7;
+    padding: 18px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cart-checkout-item:last-child {
+    border-bottom: none;
+}
+
+.cart-checkout-item h2 {
+    font-size: 18px;
+    color: #2d3748;
+    margin-bottom: 6px;
+}
+
+.qty-text {
+    color: #718096;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.price-text {
+    font-weight: 600;
+    color: #198754;
+    font-size: 16px;
+}
+
+.item-img-box img,
+.image-box img {
+    border-radius: 8px;
+    object-fit: contain;
+    max-height: 120px;
+    max-width: 120px;
+}
+
+.price {
+    font-size: 22px;
+    font-weight: bold;
+    color: #198754;
+    margin: 15px 0;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 20px 0;
+}
+
+.total-summary-box h3 {
+    font-size: 22px;
+    color: #1a202c;
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.buy-now-btn {
+    background-color: #198754;
+    color: #ffffff;
+    border: none;
+    padding: 14px 28px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.buy-now-btn:hover {
+    background-color: #146c43;
+    transform: translateY(-1px);
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 15px;
+    color: #198754;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+.no-product {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.empty-icon {
+    font-size: 50px;
+    color: #a0aec0;
+    margin-bottom: 15px;
+}
+
+.btn-link {
+    background: #198754;
+    color: white !important;
+    padding: 10px 20px;
+    border-radius: 6px;
+}
+
+.btn-link:hover {
+    background: #146c43;
+    text-decoration: none;
+}
+</style>
+
+<%- include("../shopping/commonHeader/footer") %>

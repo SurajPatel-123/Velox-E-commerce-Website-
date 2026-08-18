@@ -1,0 +1,833 @@
+<style>
+        .container1 {
+            height: 35px;
+            width: 100%;
+            display: flex;
+            margin-top: -9px;
+            padding-top: 10px;
+            justify-content: space-evenly;
+        }
+
+        .icon5 {
+            height: 30px;
+            width: 40px;
+            cursor: pointer;
+            margin-top: -4px;
+            border-radius: 7px;
+        }
+
+        .velox {
+            height: 35px;
+            width: 105px;
+            padding-left: 5px;
+            padding-top: 2px;
+            margin-top: -4px;
+        }
+
+        .velox:hover {
+            border: 1px solid #03045e;
+        }
+
+        .location {
+            color: rgb(194, 191, 191);
+            height: 40px;
+            width: 100px;
+            padding-left: 5px;
+            margin-top: -5px;
+        }
+
+        .location:hover {
+            color: #03045e;
+            border: 1px solid #03045e;
+        }
+
+        /* USER BOX & DROPDOWN STYLING FIX */
+        .user {
+            position: relative; /* Fixed: Absolute positioning for dropdown */
+            align-items: center; 
+            height: 33px; 
+            display: flex; 
+            padding: 0 8px; 
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .user:hover {
+            color: #03045e;
+            border: 1px solid #03045e;
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            top: 34px;
+            right: 0;
+            background-color: #ffffff;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            width: 120px;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .user-dropdown a {
+            display: block;
+            padding: 8px 12px;
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.2s ease;
+        }
+
+        .user-dropdown a:hover {
+            background-color: #f1f1f1;
+            color: #d00000;
+        }
+
+        .user:hover .user-dropdown {
+            display: block;
+        }
+
+        /* .search {
+            outline: none;
+            padding-left: 5px;
+            border: 1.5px solid rgb(172, 99, 99);
+        } */
+
+
+/* ================= SEARCH ================= */
+
+.search-wrapper {
+    position: relative;
+    height: 35px;
+    width: 400px;
+    display: flex;
+    align-items: center;
+}
+
+.search-category {
+    height: 35px;
+    width: 70px;
+    padding: 0 5px;
+    border: 1.5px solid rgb(194, 191, 191);
+    border-right: none;
+    border-top-left-radius: 7px;
+    border-bottom-left-radius: 7px;
+    background-color: rgb(221, 221, 221);
+    outline: none;
+    cursor: pointer;
+}
+
+.search {
+    height: 35px;
+    width: 260px;
+    padding: 0 10px;
+    border: 1.5px solid rgb(194, 191, 191);
+    outline: none;
+    box-sizing: border-box;
+}
+
+.search:focus {
+    border-color: #0077b6;
+}
+
+.search-button {
+    height: 35px;
+    width: 75px;
+    margin-left: -1px;
+    border: none;
+    outline: none;
+    background-color: #03045e;
+    color: white;
+    border-top-right-radius: 7px;
+    border-bottom-right-radius: 7px;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+.search-button:hover {
+    background-color: #0077b6;
+}
+
+/* ================= SUGGESTIONS ================= */
+
+.search-suggestions {
+    position: absolute;
+    top: 39px;
+    left: 70px;
+    width: 260px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+    z-index: 9999;
+    display: none;
+    overflow: hidden;
+}
+
+.search-suggestion-item {
+    padding: 10px 12px;
+    cursor: pointer;
+    font-size: 14px;
+    border-bottom: 1px solid #eee;
+}
+
+.search-suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.search-suggestion-item:hover {
+    background: #f0faff;
+    color: #03045e;
+}
+
+        .wish:hover {
+            color: #03045e;
+            border: 1px solid #03045e;
+        }
+
+        .cart:hover {
+            color: #03045e;
+            border: 1px solid #03045e;
+        }
+
+        .container2 {
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            height: 35px;
+            width: 100%;
+            margin-top: -10px;
+            flex-wrap: nowrap;
+            overflow: hidden;
+        }
+
+        .container2>div {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .container2 p {
+            margin: 0;
+        }
+
+        /* ================= HERO SECTION ================= */
+
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 320px;
+            overflow: hidden;
+            border-radius: 15px;
+            margin-top: 5px;
+            background: #f5f5f5;
+        }
+
+        .hero-slider {
+            display: flex;
+            width: 100%;
+            height: 300px;
+            transition: transform 0.6s ease-in-out;
+        }
+
+        .hero-slide {
+            min-width: 100%;
+            width: 100%;
+            height: 300px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .hero-slide img {
+            width: 100%;
+            height: 300px;
+            display: block;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        /* ================= ARROWS ================= */
+
+        .hero-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            height: 40px;
+            width: 40px;
+            border: none;
+            outline: none;
+            background: rgba(255, 255, 255, 0.85);
+            color: #03045e;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .hero-btn:hover {
+            background: white;
+            color: #0077b6;
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .hero-prev {
+            left: 10px;
+            border-radius: 50%;
+        }
+
+        .hero-next {
+            right: 10px;
+            border-radius: 50%;
+        }
+
+        /* ================= DOTS ================= */
+
+        .hero-dots {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .hero-dot {
+            width: 9px;
+            height: 9px;
+            background: #aaa;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .hero-dot.active {
+            width: 25px;
+            border-radius: 10px;
+            background: #03045e;
+        }
+
+        .hero-dot:hover {
+            background: #0077b6;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 900px) {
+            .hero-section {
+                height: 280px;
+            }
+
+            .hero-slider,
+            .hero-slide,
+            .hero-slide img {
+                height: 260px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .hero-section {
+                height: 220px;
+            }
+
+            .hero-slider,
+            .hero-slide,
+            .hero-slide img {
+                height: 200px;
+            }
+
+            .hero-btn {
+                width: 32px;
+                height: 45px;
+                font-size: 16px;
+            }
+
+            .hero-dot {
+                width: 7px;
+                height: 7px;
+            }
+
+            .hero-dot.active {
+                width: 18px;
+            }
+        }
+
+        /* ================= PRODUCTS SECTION ================= */
+        .products-container {
+            width: 100%;
+            display: flex;
+            margin-top: 7px;
+            border-radius: 7px;
+            gap: 8px;
+            padding: 8px;
+            box-sizing: border-box;
+            background-color: #c2c1c1;
+            overflow: hidden;
+        }
+
+        .product-card {
+            flex: 1;
+            min-width: 0;
+            height: 190px;
+            background-color: white;
+            padding: 5px;
+            box-sizing: border-box;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 145px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-color: #f8f8f8;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .product-title {
+            margin: 5px 2px 0;
+            font-size: 13px;
+            line-height: 16px;
+            height: 32px;
+            overflow: hidden;
+        }
+
+        .products-container2 {
+            width: 100%;
+            display: flex;
+            margin-top: 5px;
+            border-radius: 7px;
+            gap: 8px;
+            padding: 8px;
+            box-sizing: border-box;
+            background-color: #c2c1c1;
+            overflow: hidden;
+        }
+
+        .product-card2 {
+            flex: 1;
+            min-width: 0;
+            height: 190px;
+            background-color: white;
+            padding: 5px;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+
+        .product-image2 {
+            width: 100%;
+            height: 145px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background-color: #f8f8f8;
+        }
+
+        .product-image2 img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .product-title2 {
+            margin: 5px 2px 0;
+            font-size: 13px;
+            line-height: 16px;
+            height: 32px;
+            overflow: hidden;
+        }
+
+        .box {
+            border: 2px solid #c2c1c1;
+            background-color: #f6f5f5;
+        }
+
+        .box img {
+            height: 200px;
+            border-radius: 7px;
+            width: 400px;
+            object-fit: cover;
+        }
+
+        .box p {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 14px;
+        }
+
+        .box:hover {
+            transform: scale(1.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .box p:hover {
+            color: #03045e;
+            cursor: pointer;
+        }
+</style>
+
+<nav>
+    <div class="container1">
+        <div class="velox" style="display: flex; align-items: center;">
+            <img  onclick="window.location.reload();" class="icon5" src="/Images/icon5.png">
+            <p style=" cursor: pointer;margin-left: 5px; font-size: 1.4rem; color: #03045e;" onclick="window.location.reload()"><b>Velox</b></p>
+        </div>
+
+     <div class="location" onclick="getUserLocation()" style="display: flex; align-items: center; width: auto; max-width: 280px; cursor: pointer; gap: 8px;">
+    <i style="color:#03045e; font-size: 18px;" class="fa-solid fa-location-crosshairs"></i>
+    <p id="location-text" style="margin: 0; line-height: 1.2; color: #333;">
+        <span style="font-weight: 600; font-size: 14px;">Enter your location</span>
+    </p>
+</div>
+
+       
+    
+<!-- ================= SEARCH BAR ================= -->
+<div class="search-wrapper">
+    
+
+ <select id="searchCategory" class="search-category">
+    <option value="all">All</option>
+    <option value="Beauty">Beauty</option>
+    <option value="Electronics">Electronics</option>
+    <option value="Fashion">Fashion</option>
+    <option value="Home Appliances">Home & Appliances</option>
+    <option value="Sports">Sports</option>
+    <option value="Books">Books</option>
+    <option value="TVs">TV</option>
+    <option value="Laptops">Laptops</option>
+    <option value="Mobiles">Mobiles</option>
+</select>
+
+    <input
+        type="text"
+        id="searchInput"
+        class="search"
+        placeholder="Search Products..."
+        autocomplete="off"
+    >
+
+    <button
+        type="button"
+        id="searchButton"
+        class="search-button"
+    >
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <span>Search</span>
+    </button>
+
+    <!-- Search Suggestions -->
+    <div id="searchSuggestions" class="search-suggestions"></div>
+
+</div>
+
+
+        <!-- Dynamic User Section -->
+        <div class="user">
+            <i class="fa-regular fa-user" style="margin-right: 5px; color: #03045e;"></i>
+            
+            <% if (typeof user !== 'undefined' && user) { %>
+                <!-- USER IS LOGGED IN -->
+                <span style="font-size: 15px; font-weight: 600; color: #03045e;">
+                    Hi, <%= (user.name || user.username || 'User').split(' ')[0] %>
+                </span>
+
+                <!-- DROPDOWN ON HOVER -->
+               <div class="user-dropdown">
+    <!-- Ensure URL matches your Express route -->
+    <a href="/auth/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+</div>
+            <% } else { %>
+                <!-- USER IS NOT LOGGED IN -->
+                <a onclick="signup()" style="font-size: 15px; color: #03045e; cursor: pointer;">SignUp /</a>
+                <a onclick="login()" style="font-size: 15px; color: #03045e; cursor: pointer; margin-left: 2px;">Login</a>
+            <% } %>
+        </div>
+
+        <div onclick="wishlist()" class="wish" style="cursor: pointer; display: flex; gap: 3px; padding-left: 5px; align-items: center; height: 33px; width: 83px;">
+            <i class="fa-regular fa-heart"></i>
+            <p>Wishlist</p>
+        </div>
+
+        <div class="cart" onclick="window.location.href='/cart'" style="display:flex; gap:3px; padding-left:5px; align-items:center; height:33px; width:95px; cursor:pointer;">
+            <i style="font-size:23px; margin-top:2px;" class="fa-solid fa-cart-arrow-down"></i>
+            <p style="margin-top:25px; margin-left:-5px; font-size:18px;">Cart</p>
+            <span id="cart-count" style="margin-top:8px; font-size:14px;">(0)</span>
+        </div>
+    </div>
+</nav>
+
+<script>
+function signup(){
+    window.location.href = "/auth/signup";
+}
+
+function login(){
+    window.location.href = "/auth/login";
+}
+// New (Correct Absolute Path)
+function wishlist(){
+    window.location.href = "/wishlistShopping";
+}
+async function updateCartCount() {
+    try {
+        const response = await fetch("/cart/count");
+        const data = await response.json();
+        const countElement = document.querySelector("#cart-count");
+
+        if (countElement) {
+            countElement.textContent = `(${data.count || 0})`;
+        }
+    } catch (error) {
+        console.log("Cart count error:", error);
+    }
+}
+
+updateCartCount();
+
+/* ================= SEARCH SYSTEM ================= */
+
+const searchInput = document.getElementById("searchInput");
+const searchCategory = document.getElementById("searchCategory");
+const searchButton = document.getElementById("searchButton");
+const searchSuggestions = document.getElementById("searchSuggestions");
+
+
+/* Search Function */
+function performSearch() {
+
+    const query = searchInput.value.trim();
+    const category = searchCategory.value;
+
+    if (!query) {
+        searchInput.focus();
+        return;
+    }
+
+    const params = new URLSearchParams();
+
+    params.set("q", query);
+    params.set("category", category);
+
+    // Navigate to search results page
+    window.location.href = `/search?${params.toString()}`;
+}
+
+
+/* Search Button */
+searchButton.addEventListener("click", performSearch);
+
+
+/* Enter Key */
+searchInput.addEventListener("keydown", function (event) {
+
+    if (event.key === "Enter") {
+        event.preventDefault();
+        performSearch();
+    }
+
+});
+
+
+/* Category Change */
+searchCategory.addEventListener("change", function () {
+
+    // If user already typed something,
+    // search immediately after changing category.
+    if (searchInput.value.trim()) {
+        performSearch();
+    }
+
+});
+
+
+/* ================= SEARCH SUGGESTIONS ================= */
+
+const suggestions = [
+    {
+        name: "iPhone",
+        category: "Mobiles"
+    },
+    {
+        name: "Laptop",
+        category: "Laptops"
+    },
+    {
+        name: "Headphones",
+        category: "Electronics"
+    },
+    {
+        name: "Face Wash",
+        category: "Beauty"
+    },
+    {
+        name: "Perfume",
+        category: "Beauty"
+    },
+    {
+        name: "T-Shirt",
+        category: "Clothing"
+    },
+    {
+        name: "Jeans",
+        category: "Clothing"
+    }
+];
+
+
+searchInput.addEventListener("input", function () {
+
+    const value = searchInput.value.trim().toLowerCase();
+
+    searchSuggestions.innerHTML = "";
+
+    if (!value) {
+        searchSuggestions.style.display = "none";
+        return;
+    }
+
+    const selectedCategory = searchCategory.value;
+
+    const filteredSuggestions = suggestions.filter(item => {
+
+        const matchesText =
+            item.name.toLowerCase().includes(value);
+
+        const matchesCategory =
+            selectedCategory === "all" ||
+            item.category === selectedCategory;
+
+        return matchesText && matchesCategory;
+    });
+
+
+    if (filteredSuggestions.length === 0) {
+        searchSuggestions.style.display = "none";
+        return;
+    }
+
+
+    filteredSuggestions.forEach(item => {
+
+        const suggestion = document.createElement("div");
+
+        suggestion.className = "search-suggestion-item";
+
+        suggestion.innerHTML = `
+            <i class="fa-solid fa-magnifying-glass"></i>
+            ${item.name}
+        `;
+
+        suggestion.addEventListener("click", function () {
+
+            searchInput.value = item.name;
+
+            searchCategory.value =
+                selectedCategory === "all"
+                    ? "all"
+                    : item.category;
+
+            performSearch();
+
+        });
+
+        searchSuggestions.appendChild(suggestion);
+
+    });
+
+
+    searchSuggestions.style.display = "block";
+});
+
+
+/* Close suggestions when clicking outside */
+
+document.addEventListener("click", function (event) {
+
+    if (!event.target.closest(".search-wrapper")) {
+        searchSuggestions.style.display = "none";
+    }
+
+});
+
+async function getUserLocation() {
+    const locationText = document.getElementById("location-text");
+
+    if (!navigator.geolocation) {
+        alert("Geolocation is not supported by your browser");
+        return;
+    }
+
+    // Loading State
+    locationText.innerHTML = `<span style="font-size: 13px; color: #666;">Locating...</span>`;
+
+    navigator.geolocation.getCurrentPosition(
+        async (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+
+            try {
+                // OpenStreetMap Reverse Geocoding API
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                const data = await response.json();
+
+                const address = data.address;
+
+                // City / Main Area Name
+                const mainCity = address.city || address.town || address.village || address.suburb || address.county || "Detected Location";
+                
+                // State and Country for second line
+                const state = address.state || "";
+                const country = address.country || "";
+                const subLocation = [state, country].filter(Boolean).join(", ");
+
+                // Two-line HTML structure format:
+                // Line 1: Varanasi (Bold & Big)
+                // Line 2: Uttar Pradesh, India (Small & Grey)
+                locationText.innerHTML = `
+                    <span style="font-weight: bold; font-size: 14px; display: block; color: #111;">${mainCity}</span>
+                    <span style="font-size: 11px; color: #666; display: block;">${subLocation}</span>
+                `;
+
+                locationText.title = data.display_name; // Full address on hover
+
+            } catch (error) {
+                console.error("Geocoding Error:", error);
+                locationText.innerHTML = `<span style="font-size: 13px; color: red;">Location Error</span>`;
+            }
+        },
+        (error) => {
+            console.error("Location Permission Error:", error);
+            locationText.innerHTML = `<span style="font-size: 13px;">Enter your location</span>`;
+            
+            if (error.code === error.PERMISSION_DENIED) {
+                alert("Please allow location access in your browser settings.");
+            } else {
+                alert("Unable to fetch location. Try again.");
+            }
+        }
+    );
+}
+</script>

@@ -1,0 +1,326 @@
+<%- include('../../shopping/commonHeader/header') %>
+<%- include('../../shopping/commonHeader/navbar3') %>
+
+<style>
+/* =====================================================
+    VELOX TRAVEL DETAILS PAGE STYLES (COMPACT VERSION)
+===================================================== */
+.travel-details-wrapper {
+    background: #f4fbfd;
+    min-height: 85vh;
+    padding: 30px 15px;
+}
+
+.travel-details-card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0, 184, 220, 0.08);
+    border: 1px solid #d3f3f9;
+    overflow: hidden;
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.travel-img-container {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    height: 320px;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    background: #e0f7fa;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.travel-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.travel-img-container:hover img {
+    transform: scale(1.04);
+}
+
+.travel-rating-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(4px);
+    color: #0077b6;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.travel-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 10px;
+}
+
+.travel-category-tag {
+    display: inline-block;
+    background: #eef8f1;
+    color: #0087a3;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    width: fit-content;
+    margin-bottom: 8px;
+    border: 1px solid #c2ebd9;
+}
+
+.travel-title {
+    color: #111111;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 6px;
+}
+
+.travel-location {
+    color: #0077b6;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.travel-description {
+    color: #555555;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.travel-price-box {
+    background: #eefbfe;
+    border: 1px solid #bcebf5;
+    padding: 8px 14px;
+    border-radius: 8px;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: fit-content;
+}
+
+.travel-price-label {
+    font-size: 11px;
+    color: #666666;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.travel-price {
+    color: #009ec1;
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.travel-book-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #009ec1;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 158, 193, 0.25);
+}
+
+.travel-book-btn:hover {
+    background: #0077b6;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 119, 182, 0.3);
+}
+
+.no-results-box {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.no-results-box i {
+    font-size: 4rem;
+    color: #00b8dc;
+    margin-bottom: 15px;
+}
+
+@media (max-width: 576px) {
+    .travel-details-card {
+        padding: 15px;
+        max-width: 100%;
+    }
+    .travel-content {
+        padding-left: 0;
+        margin-top: 15px;
+    }
+    .travel-img-container {
+        height: 220px;
+        max-width: 100%;
+    }
+}
+</style>
+
+<div class="travel-details-wrapper">
+    <div class="container">
+        
+        <% 
+            // Normalize current product/item for travel
+            let currentItem = null;
+            if (typeof product !== 'undefined' && product) {
+                currentItem = product;
+            } else if (typeof products !== 'undefined' && products.length > 0) {
+                currentItem = products[0];
+            } else if (typeof packages !== 'undefined' && packages.length > 0) {
+                currentItem = packages[0];
+            }
+        %>
+
+        <% if (currentItem) { %>
+            <div class="travel-details-card">
+                <div class="row align-items-center">
+                    
+                    <!-- Left: Package Image / Banner Box -->
+                    <div class="col-md-6">
+                        <div class="travel-img-container">
+                            <img src="<%= currentItem.image || currentItem.img || currentItem.poster || '/Images/default-travel.jpg' %>" alt="<%= currentItem.title || currentItem.name || currentItem.destination %>">
+                            <span class="travel-rating-badge">
+                                <i class="fa-solid fa-star text-warning me-1"></i> <%= currentItem.rating || '4.8' %>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Right: Travel Content Details -->
+                    <div class="col-md-6">
+                        <div class="travel-content">
+                            <span class="travel-category-tag">
+                                <i class="fa-solid fa-compass me-1"></i><%= currentItem.category || 'Tour Package' %>
+                            </span>
+                            
+                            <h1 class="travel-title"><%= currentItem.title || currentItem.name || currentItem.destination %></h1>
+                            
+                            <div class="travel-location">
+                                <i class="fa-solid fa-location-dot"></i>
+                                <span><%= currentItem.location || currentItem.destination || 'Popular Destination' %></span>
+                            </div>
+
+                            <p class="travel-description">
+                                <%= currentItem.description || 'Explore stunning views, seamless itineraries, and unforgettable local travel experiences with Velox.' %>
+                            </p>
+
+                            <div class="travel-price-box">
+                                <span class="travel-price-label">Starting From:</span>
+                                <h3 class="travel-price">₹<%= currentItem.price || '0' %></h3>
+                            </div>
+
+                            <div>
+                                <button
+                                    id="book-btn"
+                                    class="travel-book-btn"
+                                    onclick="addToTravelCart('<%= currentItem._id %>')">
+                                    <i class="fa-solid fa-suitcase-rolling"></i>
+                                    <span>Book Tour</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        <% } else { %>
+            <!-- Fallback No Results Card -->
+            <div class="travel-details-card no-results-box">
+                <i class="fa-solid fa-plane-departure"></i>
+                <h2>No Destination Found</h2>
+                <p class="text-muted">We couldn't find any travel packages matching your search criteria.</p>
+                <a href="/travel" class="travel-book-btn text-decoration-none mt-2">
+                    Explore All Destinations
+                </a>
+            </div>
+        <% } %>
+
+    </div>
+</div>
+
+<script>
+async function addToTravelCart(productId){
+    const btn = document.getElementById("book-btn");
+    if (!btn) return;
+    const originalText = btn.innerHTML;
+
+    try {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Reserving...`;
+
+        const response = await fetch("/travel/veloxTravel/travelCart/add", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ productId: productId })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> Added to Trips!`;
+            updateTravelCartCount();
+            
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }, 2000);
+        } else {
+            alert(data.message || "Could not reserve package");
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+
+    } catch (err) {
+        console.error("Travel Cart Error:", err);
+        alert("Something went wrong while booking your package.");
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
+}
+
+async function updateTravelCartCount(){
+    try {
+        const response = await fetch("/travel/veloxTravel/travelCart/count");
+        const data = await response.json();
+
+        const cartElement = document.getElementById("cart-count");
+        if (cartElement) {
+            cartElement.innerHTML = "(" + (data.count || 0) + ")";
+        }
+    } catch (err) {
+        console.error("Travel Cart Count Error:", err);
+    }
+}
+
+// Initial Call
+updateTravelCartCount();
+</script>
+
+<%- include("../../shopping/commonHeader/footer") %>

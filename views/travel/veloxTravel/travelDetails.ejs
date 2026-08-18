@@ -1,0 +1,299 @@
+<%- include('../../shopping/commonHeader/header') %>
+<%- include("../../shopping/commonHeader/navbar3") %>
+
+<style>
+/* =====================================================
+   TRAVEL DETAILS PAGE STYLES
+===================================================== */
+.travel-details-wrapper {
+    background: #f6fbfc;
+    min-height: 115vh;
+    padding: 40px 0 60px;
+}
+
+.travel-details-card {
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 12px 35px rgba(7, 155, 181, 0.08);
+    border: 1px solid #e2eaec;
+    overflow: hidden;
+    padding: 30px;
+}
+
+/* Image Container */
+.travel-img-container {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    max-height: 420px;
+    background: #eef8fa;
+}
+
+.travel-img-container img {
+    width: 100%;
+    height: 380px;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.travel-img-container:hover img {
+    transform: scale(1.03);
+}
+
+.travel-rating-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(4px);
+    color: #079bb5;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 13px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Right Content */
+.travel-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 20px;
+}
+
+.travel-category-tag {
+    display: inline-block;
+    background: #e6f8fb;
+    color: #079bb5;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    width: fit-content;
+    margin-bottom: 12px;
+}
+
+.travel-title {
+    color: #123842;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 15px;
+}
+
+.travel-description {
+    color: #5d7277;
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.travel-price-box {
+    background: #f8fdfe;
+    border: 1px solid #dff2f5;
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.travel-price-label {
+    font-size: 12px;
+    color: #7a8588;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.travel-price {
+    color: #079bb5;
+    font-size: 30px;
+    font-weight: 800;
+    margin: 0;
+}
+
+/* =====================================================
+   BOOK NOW / ADD TO CART BUTTON STYLES
+===================================================== */
+.product-buttons {
+    margin-top: 10px;
+}
+
+.add-cart {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 280px;
+    background: linear-gradient(135deg, #079bb5 0%, #057a8f 100%);
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(7, 155, 181, 0.28);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.add-cart i {
+    font-size: 18px;
+    transition: transform 0.3s ease;
+}
+
+.add-cart:hover {
+    background: linear-gradient(135deg, #0689a0 0%, #046577 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(7, 155, 181, 0.4);
+}
+
+.add-cart:hover i {
+    transform: scale(1.15) rotate(-8deg);
+}
+
+.add-cart:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(7, 155, 181, 0.3);
+}
+
+/* Empty State Styling */
+.no-destination-box {
+    text-align: center;
+    padding: 50px 20px;
+}
+.no-destination-box i {
+    font-size: 60px;
+    color: #079bb5;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .travel-details-card {
+        padding: 20px;
+    }
+    .travel-content {
+        padding-left: 0;
+        margin-top: 25px;
+    }
+    .travel-title {
+        font-size: 24px;
+    }
+    .add-cart {
+        max-width: 100%;
+        width: 100%;
+    }
+}
+</style>
+
+<div class="travel-details-wrapper">
+    <div class="container">
+        <div class="travel-details-card">
+            
+            <% if (typeof product !== 'undefined' && product) { %>
+                <div class="row align-items-center">
+                    
+                    <!-- Left: Image Box -->
+                    <div class="col-md-6">
+                        <div class="travel-img-container">
+                            <img src="<%= product.image || '/images/default.jpg' %>" alt="<%= product.title || 'Travel Destination' %>">
+                            <span class="travel-rating-badge">
+                                <i class="fa-solid fa-star text-warning me-1"></i> <%= product.rating || '4.5' %>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Right: Content Details -->
+                    <div class="col-md-6">
+                        <div class="travel-content">
+                            <span class="travel-category-tag"><%= product.category || 'Travel' %></span>
+                            
+                            <h1 class="travel-title"><%= product.title %></h1>
+                            
+                            <p class="travel-description"><%= product.description %></p>
+
+                            <div class="travel-price-box">
+                                <span class="travel-price-label">Starting From:</span>
+                                <h3 class="travel-price">₹<%= (product.price || 0).toLocaleString("en-IN") %></h3>
+                            </div>
+
+                            <div>
+                                <div class="product-buttons">
+                                    <button
+                                        class="add-cart"
+                                        onclick="addToTravelCart('<%= product._id %>')">
+                                        <i class="fa-solid fa-cart-plus"></i>
+                                        Book Now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            <% } else { %>
+                <!-- Fallback view when product is null or not found -->
+                <div class="no-destination-box">
+                    <i class="fa-solid fa-plane-departure"></i>
+                    <h2 class="fw-bold mt-2">No Destination Found</h2>
+                    <p class="text-muted">We couldn't find any travel packages matching your search criteria.</p>
+                    <a href="/travel" class="btn btn-info text-white rounded-pill px-4 py-2 mt-3">Explore All Destinations</a>
+                </div>
+            <% } %>
+
+        </div>
+    </div>
+</div>
+
+<script>
+async function addToTravelCart(productId){
+    try {
+        const response = await fetch("/travel/veloxTravel/travelCart/add", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                productId: productId
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert("Product added to Travel Cart");
+            updateTravelCartCount();
+        } else {
+            alert(data.message || "Failed to add to cart");
+        }
+    } catch (err) {
+        console.log(err);
+        alert("Something went wrong");
+    }
+}
+
+async function updateTravelCartCount(){
+    try {
+        const response = await fetch("/travel/veloxTravel/travelCart/count");
+        const data = await response.json();
+
+        const countElem = document.getElementById("cart-count");
+        if (countElem) {
+            countElem.innerHTML = "(" + (data.count || 0) + ")";
+        }
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+updateTravelCartCount();
+</script>
+
+<%- include("../../shopping/commonHeader/footer") %>

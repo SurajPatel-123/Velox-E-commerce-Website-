@@ -1,0 +1,276 @@
+<%- include("../commonHeader/header") %>
+        <%- include("../commonHeader/navbar1") %>
+        <hr>
+        <div class="container2">
+            <div onclick="fashion()" style="cursor: pointer;"><i class="fa-solid fa-person-dress"></i>
+                <p>Fashion</p>
+            </div>
+            <div onclick="beauty()" style="cursor: pointer;"><i class="fa-solid fa-wand-magic-sparkles"></i>
+                <p>Beauty</p>
+            </div>
+            <div onclick="electronics()" style="cursor: pointer;"><i class="fa-solid fa-display"></i>
+                <p>Electronics</p>
+            </div>
+            <div onclick="mobile()" style="cursor: pointer;"><i class="fa-solid fa-mobile-screen-button"></i>
+                <p>Mobiles</p>
+            </div>
+            <div onclick="laptops()" style="cursor: pointer;"><i class="fa-solid fa-laptop"></i>
+                <p>Laptops</p>
+            </div>
+            <div onclick="tvs()" style="cursor: pointer;"><i class="fa-solid fa-computer"></i>
+                <p>TVs</p>
+            </div>
+            <div onclick="home()" style="cursor: pointer;"><i class="fa-solid fa-blender"></i>
+                <p>Home Appliances</p>
+            </div>
+            <div onclick="sport()" style="cursor: pointer;"><i class="fa-solid fa-bicycle"></i>
+                <p>Sports</p>
+            </div>
+            <div onclick="books()" style="cursor: pointer;"><i class="fa-solid fa-book"></i>
+                <p>Books</p>
+            </div>
+            <div onclick="toys()" style="cursor: pointer;"><i class="fa-solid fa-car"></i>
+                <p>Toys</p>
+            </div>
+              <!-- Deals -->
+    <div onclick="deals()" style="cursor: pointer;">
+        <i style="color: red;" class="fa-solid fa-tags"></i>
+        <p>Deals</p>
+    </div>
+        </div>
+
+    <main>
+        <!-- <div style="height: 300px; width: 100%; background-color: #ee0505; display: flex; align-items: center; justify-content: center;">
+        </div> -->
+        <section class="hero-section">
+
+            <!-- Left Arrow -->
+            <button class="hero-btn hero-prev" onclick="prevSlide()">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+
+            <!-- Slides -->
+            <div class="hero-slider">
+
+                <div class="hero-slide">
+                    <img src="/Images/hero1.png" alt="Shopping Banner">
+                </div>
+
+                <div class="hero-slide">
+                    <img src="/Images/hero2.png" alt="Electronics Banner">
+                </div>
+
+                <div class="hero-slide">
+                    <img src="/Images/hero3.png" alt="Fashion Banner">
+                </div>
+
+                <div class="hero-slide">
+                    <img src="/Images/hero4.png" alt="Home Banner">
+                </div>
+                <div class="hero-slide">
+                    <img src="/Images/hero5.png" alt="Fashion Banner">
+                </div>
+
+                <div class="hero-slide">
+                    <img src="/Images/hero6.png" alt="Home Banner">
+                </div>
+            </div>
+
+            <!-- Right Arrow -->
+            <button class="hero-btn hero-next" onclick="nextSlide()">
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+
+            <!-- Dots -->
+            <div class="hero-dots">
+                <span class="hero-dot active" onclick="goToSlide(0)"></span>
+                <span class="hero-dot" onclick="goToSlide(1)"></span>
+                <span class="hero-dot" onclick="goToSlide(2)"></span>
+                <span class="hero-dot" onclick="goToSlide(3)"></span>
+                <span class="hero-dot" onclick="goToSlide(4)"></span>
+                <span class="hero-dot" onclick="goToSlide(5)"></span>
+                <span class="hero-dot" onclick="goToSlide(6)"></span>
+            </div>
+
+        </section>
+        <section class="products-section">
+
+            <div class="products-container">
+
+                <% products.slice(0, 10).forEach(product=> { %>
+
+                    <div class="product-card">
+
+                        <div class="product-image">
+                            <img src="<%= product.image %>" alt="<%= product.title %>">
+                        </div>
+
+                        <p class="product-title">
+                            <%= product.title %>
+                        </p>
+
+                    </div>
+
+                    <% }) %>
+
+            </div>
+
+        </section>
+        <section class="products-section2">
+
+            <div class="products-container2">
+
+                <% products.slice(11, 20).forEach(product=> { %>
+
+                    <div class="product-card2">
+
+                        <div class="product-image2">
+                            <img src="<%= product.image %>" alt="<%= product.title %>">
+                        </div>
+
+                        <p class="product-title2">
+                            <%= product.title %>
+                        </p>
+
+                    </div>
+
+                    <% }) %>
+
+            </div>
+
+        </section>
+        <div
+            style="border-radius: 7px; padding-top: 20px; margin-top: 5px; height: 810px; width: 100%; display: flex; justify-content: space-evenly; flex-wrap: wrap;">
+            <div onclick="electronics()" class="box1 box" style="border-radius: 7px; height: 250px; width: 400px; "><img
+                    src="/Images/banner1 (1).png" alt="Image 1" ><p>Electronics</p></div>
+            <div onclick="beauty()" class="box2 box" style="border-radius: 7px; height: 250px; width: 400px; "><img
+                    src="/Images/banner1 (2).png" alt="Image 2"><p>Beauty</p></div>
+            <div onclick="fashion()" class="box3 box" style="border-radius: 7px; height: 250px; width: 400px; "><img
+                    src="/Images/banner1 (3).png" alt="Image 3"><p>Fashion</p></div>
+            <div onclick="mobile()" class="box4 box" style="border-radius: 7px; height: 250px; width: 400px; "><img
+                    src="/Images/banner1 (4).png" alt="Image 4"><p>Mobiles</p></div>
+            <div onclick="laptops()" class="box5 box" style="border-radius: 7px; height: 250px; width: 400px; "><img
+                    src="/Images/banner1 (5).png" alt="Image 5"><p>Laptops</p></div>
+            <div onclick="tvs()" class="box6 box" style="border-radius: 7px; height: 250px; width: 400px; "><img
+                    src="/Images/banner1 (6).png" alt="Image 6"><p>TVs</p></div>
+            <div onclick="home()" class="box7 box" style="border-radius: 7px; height: 250px; width: 400px; "><img
+                    src="/Images/banner1 (7).png" alt="Image 7"><p>Home & Appliances</p></div>
+            <div onclick="sport()" class="box8 box" style="border-radius: 7px; height: 250px; width: 400px; "><img
+                    src="/Images/banner1 (8).png" alt="Image 8"><p>Sports</p></div>
+            <div onclick="books()" class="box9 box" style="border-radius: 7px; height: 250px; width: 400px; "><img
+                    src="/Images/banner1 (9).png" alt="Image 9"><p>Books</p></div>
+        </div>
+    </main>
+    <%- include("../commonHeader/footer") %>
+    <script>
+        let currentSlide = 0;
+
+        const slides = document.querySelector(".hero-slider");
+        const dots = document.querySelectorAll(".hero-dot");
+
+        const totalSlides = document.querySelectorAll(".hero-slide").length;
+
+
+        function showSlide(index) {
+
+            if (index >= totalSlides) {
+                currentSlide = 0;
+            }
+
+            else if (index < 0) {
+                currentSlide = totalSlides - 1;
+            }
+
+            else {
+                currentSlide = index;
+            }
+
+            slides.style.transform =
+                `translateX(-${currentSlide * 100}%)`;
+
+
+            dots.forEach((dot, index) => {
+
+                dot.classList.remove("active");
+
+                if (index === currentSlide) {
+                    dot.classList.add("active");
+                }
+
+            });
+
+        }
+
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+
+        function goToSlide(index) {
+            showSlide(index);
+        }
+
+
+        /* Auto Slide */
+
+        let autoSlide = setInterval(() => {
+            nextSlide();
+        }, 3000);
+
+
+        /* Mouse hover par slider stop */
+
+        const hero = document.querySelector(".hero-section");
+
+        hero.addEventListener("mouseenter", () => {
+            clearInterval(autoSlide);
+        });
+
+
+        hero.addEventListener("mouseleave", () => {
+
+            autoSlide = setInterval(() => {
+                nextSlide();
+            }, 3000);
+
+        });
+function electronics(){
+    window.location.href="/electronics";
+}
+function beauty(){
+    window.location.href="/beauty";
+}
+function fashion(){
+    window.location.href="/fashion";
+}
+ function mobile(){
+    window.location.href="/mobile";
+  }
+  function laptops(){
+    window.location.href="/laptops";
+  }
+  function tvs(){
+    window.location.href="/tvs";
+  }
+  function home(){
+    window.location.href="/Home&Appliances";
+  }
+    function sport(){
+    window.location.href="/sport";
+  }
+  function books(){
+    window.location.href="/books";
+  }
+  function toys(){
+    window.location.href="/toys";
+  }
+  function deals() {
+    window.location.href = "/deals";
+}
+  </script>

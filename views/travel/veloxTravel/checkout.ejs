@@ -1,0 +1,230 @@
+<%- include("../../shopping/commonHeader/header") %>
+<%- include("../../shopping/commonHeader/navbar3") %>
+
+<div class="checkout-page-wrapper">
+    <h1 class="page-header-title">Travel Booking Checkout</h1>
+
+    <div class="checkout-container">
+
+        <% if (typeof product !== 'undefined' && product) { %>
+
+            <!-- 1. SINGLE ITEM CHECKOUT (BOOK NOW) -->
+            <div class="checkout-card">
+                <h2><%= product.title || product.flightName || product.destination %></h2>
+                <% if (product.image) { %>
+                    <div class="image-box">
+                        <img src="<%= product.image %>" alt="<%= product.title %>">
+                    </div>
+                <% } %>
+                <p class="price">Price: ₹<%= Number(product.price || product.ticketPrice).toLocaleString("en-IN") %></p>
+
+                <form action="/place-order" method="POST">
+                    <input type="hidden" name="checkoutType" value="single">
+                    <input type="hidden" name="productId" value="<%= product._id %>">
+                    <button type="submit" class="buy-now-btn">
+                        <i class="fa-solid fa-plane-departure"></i> Complete Booking
+                    </button>
+                </form>
+            </div>
+
+        <% } else if (typeof cart !== 'undefined' && cart && cart.length > 0) { %>
+
+            <!-- 2. FULL CART CHECKOUT -->
+            <div class="cart-checkout-list">
+                <% let totalAmount = 0; %>
+
+                <% cart.forEach(item => { %>
+                    <% 
+                        const prod = item.product || item;
+                        const price = Number(prod.price || prod.ticketPrice || item.price || item.ticketPrice) || 0;
+                        const qty = Number(item.quantity || item.tickets || item.qty) || 1;
+                        const itemSubtotal = price * qty;
+                        totalAmount += itemSubtotal;
+                    %>
+
+                    <div class="cart-checkout-item">
+                        <div class="item-info">
+                            <h2><%= prod.title || prod.flightName || prod.destination || item.title || "Travel Item" %></h2>
+                            <p class="qty-text">Tickets / Bookings: <%= qty %></p>
+                            <p class="price-text">Price: ₹<%= itemSubtotal.toLocaleString("en-IN") %></p>
+                        </div>
+                        <% if (prod.image || item.image) { %>
+                            <div class="item-img-box">
+                                <img src="<%= prod.image || item.image %>" alt="Booking">
+                            </div>
+                        <% } %>
+                    </div>
+                <% }) %>
+
+                <hr class="divider">
+                <div class="total-summary-box">
+                    <h3>Total Amount: ₹<%= totalAmount.toLocaleString("en-IN") %></h3>
+                </div>
+
+                <form action="/place-order" method="POST">
+                    <!-- FIX: Set type to travel and pass stringified cart data -->
+                    <input type="hidden" name="checkoutType" value="travel">
+                    <input type="hidden" name="cartData" value='<%= JSON.stringify(cart) %>'>
+                    <input type="hidden" name="totalAmount" value="<%= totalAmount %>">
+                    <button type="submit" class="buy-now-btn">
+                        <i class="fa-solid fa-plane-circle-check"></i> Book All Tickets
+                    </button>
+                </form>
+            </div>
+
+        <% } else { %>
+
+            <!-- 3. FALLBACK STATE -->
+            <div class="no-product">
+                <i class="fa-solid fa-plane-slash empty-icon"></i>
+                <p>No travel bookings selected for checkout.</p>
+                <a href="/travel" class="back-link btn-link">Explore Destinations</a>
+            </div>
+
+        <% } %>
+
+        <br>
+        <a href="/travelCart" class="back-link">
+            <i class="fa-solid fa-arrow-left"></i> Back to Travel Cart
+        </a>
+    </div>
+</div>
+
+<style>
+body {
+    background-color: #f4f7f6;
+}
+
+.checkout-page-wrapper {
+    width: 90%;
+    max-width: 900px;
+    margin: 30px auto;
+}
+
+.page-header-title {
+    font-size: 28px;
+    color: #1e293b;
+    margin-bottom: 20px;
+    font-weight: 700;
+}
+
+.checkout-container {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+}
+
+.cart-checkout-item {
+    border-bottom: 1px solid #edf2f7;
+    padding: 18px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cart-checkout-item h2 {
+    font-size: 18px;
+    color: #0f172a;
+    margin-bottom: 6px;
+}
+
+.qty-text {
+    color: #64748b;
+    font-size: 14px;
+    margin-bottom: 4px;
+}
+
+.price-text {
+    font-weight: 600;
+    color: #0d6efd;
+    font-size: 16px;
+}
+
+.item-img-box img, .image-box img {
+    border-radius: 8px;
+    object-fit: cover;
+    max-height: 120px;
+    width: 150px;
+}
+
+.price {
+    font-size: 22px;
+    font-weight: bold;
+    color: #0d6efd;
+    margin: 15px 0;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #e2e8f0;
+    margin: 20px 0;
+}
+
+.total-summary-box h3 {
+    font-size: 22px;
+    color: #0f172a;
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.buy-now-btn {
+    background-color: #0d6efd;
+    color: #ffffff;
+    border: none;
+    padding: 14px 28px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.buy-now-btn:hover {
+    background-color: #0b5ed7;
+    transform: translateY(-1px);
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 15px;
+    color: #0d6efd;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+.no-product {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.empty-icon {
+    font-size: 50px;
+    color: #94a3b8;
+    margin-bottom: 15px;
+}
+
+.btn-link {
+    background: #0d6efd;
+    color: white !important;
+    padding: 10px 20px;
+    border-radius: 6px;
+}
+.btn-link:hover {
+    background: #0b5ed7;
+    text-decoration: none;
+}
+</style>
+
+<%- include("../../shopping/commonHeader/footer") %>

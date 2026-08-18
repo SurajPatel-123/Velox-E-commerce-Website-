@@ -1,0 +1,418 @@
+<style>
+    /* USER BOX & DROPDOWN STYLING FIX */
+    .user {
+        position: relative;
+        align-items: center; 
+        height: 33px; 
+        display: flex; 
+        color: #198754;
+        padding: 0 8px; 
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .user:hover {
+        color: #198754;
+        border: 1px solid #198754;
+    }
+
+    .user-dropdown {
+        display: none;
+        position: absolute;
+        top: 34px;
+        right: 0;
+        background-color: #ffffff;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        width: 120px;
+        z-index: 1000;
+        overflow: hidden;
+    }
+
+    .user-dropdown a {
+        display: block;
+        padding: 8px 12px;
+        color: #333;
+        text-decoration: none;
+        font-size: 14px;
+        transition: background 0.2s ease;
+    }
+
+    .user-dropdown a:hover {
+        background-color: #f1f1f1;
+        color: #198754;
+    }
+
+    .user:hover .user-dropdown {
+        display: block;
+    }
+
+    /* MAIN NAVBAR STYLING */
+    .grocery-navbar { width: 100%; background-color: #ffffff; }
+    .container1 { height: 45px; width: 100%; display: flex; align-items: center; justify-content: space-evenly; padding-top: 5px; box-sizing: border-box; }
+    .icon5 { height: 30px; width: 40px; border-radius: 7px; }
+    .velox { height: 38px; width: 110px; display: flex; align-items: center; padding-left: 5px; box-sizing: border-box; cursor: pointer; }
+    .velox:hover { border: 1px solid #198754; border-radius: 5px; }
+    .location { color: #777; height: 40px; width: 120px; padding-left: 5px; display: flex; align-items: center; gap: 5px; cursor: pointer; box-sizing: border-box; }
+    .location i { color: #198754 !important; }
+    .location:hover { color: #198754; border: 1px solid #198754; border-radius: 5px; }
+    
+    /* SEARCH BOX & SUGGESTIONS */
+    .search-wrapper { position: relative; }
+    .search-box { height: 35px; width: 430px; display: flex; align-items: center; }
+    .search-category { height: 35px; width: 80px; background-color: #eef8f1; border: 1.5px solid #b7d8c5; border-right: none; outline: none; border-radius: 7px 0 0 7px; color: #333; cursor: pointer; }
+    .search { height: 35px; width: 280px; padding-left: 8px; outline: none; border: 1.5px solid #b7d8c5; box-sizing: border-box; }
+    .search:focus { border-color: #198754; }
+    .search-btn { height: 35px; width: 70px; border: none; display: flex; align-items: center; justify-content: center; gap: 5px; outline: none; background-color: #198754; color: white; cursor: pointer; border-radius: 0 7px 7px 0; }
+    .search-btn:hover { background-color: #157347; }
+    
+    .search-suggestions {
+        display: none;
+        position: absolute;
+        top: 38px;
+        left: 0;
+        width: 100%;
+        background-color: #fff;
+        border: 1px solid #b7d8c5;
+        border-radius: 0 0 7px 7px;
+        box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+        z-index: 999;
+    }
+    .search-suggestion-item {
+        padding: 8px 12px;
+        cursor: pointer;
+        font-size: 14px;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .search-suggestion-item:hover {
+        background-color: #eef8f1;
+        color: #198754;
+    }
+
+    .wish { width: 90px; height: 35px; display: flex; align-items: center; gap: 5px; padding-left: 5px; cursor: pointer; box-sizing: border-box; }
+    .wish i { color: #198754; }
+    .wish p { margin: 0; color: #333; }
+    .wish:hover { color: #198754; border: 1px solid #198754; border-radius: 5px; }
+    
+    .cart { width: 100px; height: 35px; display: flex; align-items: center; gap: 5px; padding-left: 5px; cursor: pointer; box-sizing: border-box; }
+    .cart i { color: #198754; }
+    .cart p { margin: 0; color: #333; }
+    .cart span { color: #198754; }
+    .cart:hover { color: #198754; border: 1px solid #198754; border-radius: 5px; }
+    
+    .grocery-menu { width: 100%; height: 40px; display: flex; align-items: center; justify-content: space-evenly; border-top: 1px solid #d9eadf; border-bottom: 1px solid #b7d8c5; background-color: #f4fbf6; overflow: hidden; }
+    .grocery-menu div { height: 35px; display: flex; align-items: center; gap: 5px; padding: 0 10px; white-space: nowrap; cursor: pointer; color: #333; transition: all 0.2s ease; }
+    .grocery-menu div:hover { color: #198754; background-color: #e3f3e8; border-radius: 5px; }
+    .grocery-menu i { color: #198754; }
+    .grocery-menu div:first-child { color: #198754; font-weight: 600; }
+</style>
+
+<nav class="grocery-navbar">
+    <div class="container1">
+        <div class="velox" onclick="window.location.reload()">
+            <img class="icon5" src="/Images/icon5.png" alt="Logo">
+            <p style="margin-left: 5px; font-size: 1.4rem; color: #198754;"><b>Velox</b></p>
+        </div>
+
+        <div class="location" onclick="getUserLocation()" style="display: flex; align-items: center; width: auto; max-width: 280px; cursor: pointer; gap: 8px;">
+            <i style="color:#198754; font-size: 18px;" class="fa-solid fa-location-crosshairs"></i>
+            <p id="location-text" style="margin: 0; line-height: 1.2; color: #333;">
+                <span style="font-weight: 600; font-size: 14px;">Enter your location</span>
+            </p>
+        </div>
+
+        <!-- ================= SEARCH BAR ================= -->
+        <div class="search-wrapper">
+            <div class="search-box">
+                <select id="searchCategory" class="search-category">
+                    <option value="all">All</option>
+                    <option value="Fruits & Vegetables">Fruits & Vegetables</option>
+                    <option value="Dairy & Bakery">Dairy & Bakery</option>
+                    <option value="Snacks">Snacks</option>
+                    <option value="Beverages">Beverages</option>
+                    <option value="Personal Care">Personal Care</option>
+                    <option value="Household">Household</option>
+                </select>
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="search"
+                    placeholder="Search groceries..."
+                    autocomplete="off"
+                >
+
+                <button
+                    type="button"
+                    id="searchButton"
+                    class="search-btn"
+                >
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Search</span>
+                </button>
+            </div>
+
+            <!-- Search Suggestions -->
+            <div id="searchSuggestions" class="search-suggestions"></div>
+        </div>
+
+        <!-- Dynamic User Section -->
+        <div class="user">
+            <i class="fa-regular fa-user" style="margin-right: 5px; color: #198754;"></i>
+            
+            <% if (typeof user !== 'undefined' && user) { %>
+                <!-- USER IS LOGGED IN -->
+                <span style="font-size: 15px; font-weight: 600; color: #198754;">
+                    Hi, <%= (user.name || user.username || 'User').split(' ')[0] %>
+                </span>
+
+                <!-- DROPDOWN ON HOVER -->
+                <div class="user-dropdown">
+                    <a href="/auth/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                </div>
+            <% } else { %>
+                <!-- USER IS NOT LOGGED IN -->
+                <a onclick="signup()" style="font-size: 15px; color: #198754; cursor: pointer;">SignUp /</a>
+                <a onclick="login()" style="font-size: 15px; color: #198754; cursor: pointer; margin-left: 2px;">Login</a>
+            <% } %>
+        </div>
+
+        <div onclick="wishlist()" class="wish" style="cursor: pointer; display: flex; gap: 3px; padding-left: 5px; align-items: center; height: 33px; width: 83px;">
+            <i class="fa-regular fa-heart"></i>
+            <p>Wishlist</p>
+        </div>
+
+        <div class="cart" onclick="window.location.href='/groceryCart'">
+            <i style="font-size:23px;" class="fa-solid fa-cart-arrow-down"></i>
+            <p>Cart</p>
+            <span id="cart-count">(0)</span>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="grocery-menu">
+        <div><i class="fa-solid fa-layer-group"></i><span>All Categories</span></div>
+        <div onclick="fruitsandvegetables()"><i class="fa-solid fa-apple-whole"></i><span>Fruits & Vegetables</span></div>
+        <div onclick="dairy()"><i class="fa-solid fa-cow"></i><span>Dairy & Eggs</span></div>
+        <div onclick="snacks()"><i class="fa-solid fa-cookie-bite"></i><span>Snacks</span></div>
+        <div onclick="beverages()"><i class="fa-solid fa-bottle-water"></i><span>Beverages</span></div>
+        <div onclick="personal()"><i class="fa-solid fa-pump-soap"></i><span>Personal Care</span></div>
+        <div onclick="household()"><i class="fa-solid fa-house"></i><span>Household</span></div>
+    </div>
+</nav>
+
+<script>
+    function fruitsandvegetables(){
+        window.location.href = "/grocery/category/Fruits%20%26%20Vegetables";
+    }
+    function dairy(){
+        window.location.href = "/grocery/category/Dairy%20%26%20Bakery";
+    }
+    function snacks(){
+        window.location.href = "/grocery/category/Snacks";
+    }
+    function beverages(){
+        window.location.href = "/grocery/category/Beverages";
+    }
+    function personal(){
+        window.location.href = "/grocery/category/Personal%20Care";
+    }
+    function household(){
+        window.location.href = "/grocery/category/Household";
+    }
+    function signup(){
+        window.location.href = "/auth/signup";
+    }
+    function login(){
+        window.location.href = "/auth/login";
+    }
+    function wishlist(){
+        window.location.href = "/wishlist";
+    }
+
+    /* ================= SEARCH LOGIC & SUGGESTIONS ================= */
+
+    const searchInput = document.getElementById("searchInput");
+    const searchCategory = document.getElementById("searchCategory");
+    const searchButton = document.getElementById("searchButton");
+    const searchSuggestions = document.getElementById("searchSuggestions");
+
+    const suggestions = [
+        { name: ["Apple", "Banana", "Grapes", "fal", "Fruits"], category: "Fruits & Vegetables" },
+        { name: ["Milk", "Doodh", "Cow Milk"], category: "Dairy & Bakery" },
+        { name: ["Namkin", "Chips", "Biscuits"], category: "Snacks" },
+        { name: ["Rice", "Atta", "Dal"], category: "Staples" },
+        { name: ["Toothpaste", "Soap", "Shampoo"], category: "Personal Care" },
+        { name: ["Water", "Juice", "Soda"], category: "Beverages" }
+    ];
+
+    /* Dedicated Grocery Search Redirect */
+    function performSearch() {
+        const query = searchInput.value.trim();
+        const category = searchCategory.value;
+
+        if (!query) {
+            searchInput.focus();
+            return;
+        }
+
+        const params = new URLSearchParams();
+        params.set("q", query);
+        if (category !== "all") {
+            params.set("category", category);
+        }
+
+        // UPDATED: Now redirects explicitly to /grocery/search
+        window.location.href = `/grocery/search?${params.toString()}`;
+    }
+
+    /* Event Listeners */
+    searchButton.addEventListener("click", performSearch);
+
+    searchInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            performSearch();
+        }
+    });
+
+    searchCategory.addEventListener("change", function () {
+        if (searchInput.value.trim()) {
+            performSearch();
+        }
+    });
+
+    /* Input Event Suggestions */
+    searchInput.addEventListener("input", function () {
+        const value = searchInput.value.trim().toLowerCase();
+        searchSuggestions.innerHTML = "";
+
+        if (!value) {
+            searchSuggestions.style.display = "none";
+            return;
+        }
+
+        const selectedCategory = searchCategory.value;
+        const matches = [];
+
+        suggestions.forEach(item => {
+            const matchesCategory = selectedCategory === "all" || item.category === selectedCategory;
+            if (!matchesCategory) return;
+
+            const namesArray = Array.isArray(item.name) ? item.name : [item.name];
+
+            namesArray.forEach(term => {
+                if (term.toLowerCase().includes(value)) {
+                    matches.push({
+                        displayName: term,
+                        category: item.category
+                    });
+                }
+            });
+        });
+
+        if (matches.length === 0) {
+            searchSuggestions.style.display = "none";
+            return;
+        }
+
+        matches.slice(0, 6).forEach(match => {
+            const suggestion = document.createElement("div");
+            suggestion.className = "search-suggestion-item";
+            suggestion.innerHTML = `
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span>${match.displayName}</span>
+            `;
+
+            suggestion.addEventListener("click", function () {
+                searchInput.value = match.displayName;
+                if (searchCategory.querySelector(`option[value="${match.category}"]`)) {
+                    searchCategory.value = match.category;
+                }
+                performSearch();
+            });
+
+            searchSuggestions.appendChild(suggestion);
+        });
+
+        searchSuggestions.style.display = "block";
+    });
+
+    /* Close suggestions on click outside */
+    document.addEventListener("click", function (event) {
+        if (!event.target.closest(".search-wrapper")) {
+            searchSuggestions.style.display = "none";
+        }
+    });
+
+    // CART COUNT
+    async function updateCartCount() {
+        try {
+            const response = await fetch("/cart/count");
+            const data = await response.json();
+            const countElement = document.querySelector("#cart-count");
+
+            if (countElement) {
+                countElement.textContent = `(${data.count || 0})`;
+            }
+        } catch (error) {
+            console.log("Cart count error:", error);
+        }
+    }
+
+    updateCartCount();
+
+    // GEOLOCATION
+    async function getUserLocation() {
+        const locationText = document.getElementById("location-text");
+
+        if (!navigator.geolocation) {
+            alert("Geolocation is not supported by your browser");
+            return;
+        }
+
+        locationText.innerHTML = `<span style="font-size: 13px; color: #666;">Locating...</span>`;
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                try {
+                    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                    const data = await response.json();
+                    const address = data.address;
+
+                    const mainCity = address.city || address.town || address.village || address.suburb || address.county || "Detected Location";
+                    const state = address.state || "";
+                    const country = address.country || "";
+                    const subLocation = [state, country].filter(Boolean).join(", ");
+
+                    locationText.innerHTML = `
+                        <span style="font-weight: bold; font-size: 14px; display: block; color: #111;">${mainCity}</span>
+                        <span style="font-size: 11px; color: #666; display: block;">${subLocation}</span>
+                    `;
+                    locationText.title = data.display_name;
+
+                } catch (error) {
+                    console.error("Geocoding Error:", error);
+                    locationText.innerHTML = `<span style="font-size: 13px; color: red;">Location Error</span>`;
+                }
+            },
+            (error) => {
+                console.error("Location Permission Error:", error);
+                locationText.innerHTML = `<span style="font-size: 13px;">Enter your location</span>`;
+                if (error.code === error.PERMISSION_DENIED) {
+                    alert("Please allow location access in your browser settings.");
+                } else {
+                    alert("Unable to fetch location. Try again.");
+                }
+            }
+        );
+    }
+</script>

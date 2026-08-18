@@ -1,0 +1,139 @@
+<%- include("./commonHeader/header") %>
+
+<h1>Shopping Checkout Page</h1>
+
+<div class="checkout-container">
+
+    <% if (typeof product !== 'undefined' && product) { %>
+
+        <!-- 1. SINGLE PRODUCT CHECKOUT (BUY NOW) -->
+        <div class="checkout-card">
+            <h2><%= product.title %></h2>
+            <% if (product.image) { %>
+                <img src="<%= product.image %>" width="300" height="200" alt="<%= product.title %>">
+            <% } %>
+            <p class="price">Price: ₹<%= Number(product.price).toLocaleString("en-IN") %></p>
+
+            <form action="/place-order" method="POST">
+                <input type="hidden" name="checkoutType" value="single">
+                <input type="hidden" name="productId" value="<%= product._id %>">
+                <button type="submit" class="buy-now-btn">
+                    <i class="fa-solid fa-bolt"></i> Place Order / Buy Now
+                </button>
+            </form>
+        </div>
+
+    <% } else if (typeof cart !== 'undefined' && cart && cart.length > 0) { %>
+
+        <!-- 2. FULL CART CHECKOUT -->
+        <div class="cart-checkout-list">
+            <% let totalAmount = 0; %>
+
+            <% cart.forEach(item => { %>
+                <% 
+                    const prod = item.product || item;
+                    const price = prod && prod.price ? Number(prod.price) : 0;
+                    const qty = item.quantity ? Number(item.quantity) : 1;
+                    const itemSubtotal = price * qty;
+                    totalAmount += itemSubtotal;
+                %>
+
+                <% if (prod && prod.title) { %>
+                    <div class="cart-checkout-item">
+                        <h2><%= prod.title %></h2>
+                        <% if (prod.image) { %>
+                            <img src="<%= prod.image %>" width="150" alt="<%= prod.title %>">
+                        <% } %>
+                        <p>Quantity: <%= qty %></p>
+                        <p>Price: ₹<%= itemSubtotal.toLocaleString("en-IN") %></p>
+                    </div>
+                <% } %>
+            <% }) %>
+
+            <hr>
+            <h3>Total Amount: ₹<%= totalAmount.toLocaleString("en-IN") %></h3>
+
+            <form action="/place-order" method="POST">
+                <input type="hidden" name="checkoutType" value="cart">
+                
+                <!-- FIX: Cart Data & Calculated Total Amount Hidden Inputs -->
+                <input type="hidden" name="cartData" value="<%= encodeURIComponent(JSON.stringify(cart)) %>">
+                <input type="hidden" name="totalAmount" value="<%= totalAmount %>">
+
+                <button type="submit" class="buy-now-btn">
+                    <i class="fa-solid fa-bag-shopping"></i> Place Order for All Items
+                </button>
+            </form>
+        </div>
+
+    <% } else { %>
+
+        <!-- 3. FALLBACK STATE -->
+        <div class="no-product">
+            <p>No product selected for checkout.</p>
+            <a href="/" class="back-link">Continue Shopping</a>
+        </div>
+
+    <% } %>
+
+    <br>
+    <a href="/cart" class="back-link">Back to Cart</a>
+</div>
+
+<!-- STYLES -->
+<style>
+.checkout-container {
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.cart-checkout-item {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 15px 0;
+}
+
+.price {
+    font-size: 20px;
+    font-weight: bold;
+    color: #172b4d;
+}
+
+.buy-now-btn {
+    background-color: #03045e;
+    color: #ffffff;
+    border: none;
+    padding: 12px 30px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-top: 15px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s ease-in-out, transform 0.1s;
+}
+
+.buy-now-btn:hover {
+    background-color: #172b4d;
+    transform: translateY(-2px);
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 15px;
+    color: #03045e;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+</style>
+
+<%- include("./commonHeader/footer") %>

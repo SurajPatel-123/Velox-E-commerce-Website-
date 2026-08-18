@@ -1,0 +1,161 @@
+<%- include("../../shopping/commonHeader/header") %>
+<%- include("../../shopping/commonHeader/navbar4") %>
+
+<div class="bms-checkout-container">
+    <div class="checkout-header">
+        <h2>🎟️ Booking Summary & Checkout</h2>
+        <p>Review your movie/event ticket details before payment.</p>
+    </div>
+
+    <% if (!cart || cart.length === 0) { %>
+        <!-- EMPTY / INVALID CHECKOUT STATE -->
+        <div class="empty-checkout-card">
+            <i class="fa-solid fa-ticket-simple empty-icon"></i>
+            <h3>No Active Booking Found!</h3>
+            <p>Please select a movie or show to proceed with checkout.</p>
+            <a href="/bookmyshow" class="btn explore-btn">Explore Movies & Shows</a>
+        </div>
+    <% } else { %>
+        <div class="checkout-layout">
+            
+            <!-- LEFT COLUMN: CART ITEMS LIST -->
+            <div class="booking-items-list">
+                <% cart.forEach(item => { %>
+                    <% const prod = item.product || item; %>
+                    <% if (prod) { %>
+                        <div class="booking-details-card">
+                            <div class="bms-item-info">
+                                <img src="<%= prod.image || '/images/default-show.jpg' %>" alt="<%= prod.title %>" class="bms-poster">
+                                <div class="bms-meta">
+                                    <h3><%= prod.title %></h3>
+                                    <p class="meta-tag"><%= prod.category || 'Event / Show' %> • <%= prod.language || 'Hindi / English' %></p>
+                                    <p class="venue-name"><i class="fa-solid fa-location-dot"></i> <%= prod.venue || 'PVR / Stadium Arena' %></p>
+                                    <p class="showtime"><i class="fa-regular fa-clock"></i> Ticket Qty: <strong><%= item.quantity || 1 %></strong></p>
+                                    <p class="item-price">Price: ₹<%= Number(prod.price || 0).toLocaleString('en-IN') %> x <%= item.quantity || 1 %></p>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                <% }) %>
+            </div>
+
+            <!-- RIGHT COLUMN: PAYMENT & SUMMARY CARD -->
+            <div class="payment-summary-card">
+                <h3>Order Details</h3>
+
+                <div class="price-breakdown">
+                    <div class="price-row">
+                        <span>Ticket Price (<%= totalItems || cart.length %> Items)</span>
+                        <span>₹<%= Number(subtotal || 0).toLocaleString('en-IN') %></span>
+                    </div>
+                    <div class="price-row">
+                        <span>Convenience & Service Fee</span>
+                        <span>₹<%= Number(convenienceFee || 0).toLocaleString('en-IN') %></span>
+                    </div>
+                    <hr>
+                    <div class="price-row total-row">
+                        <span>Amount Payable</span>
+                        <span>₹<%= Number(grandTotal || 0).toLocaleString('en-IN') %></span>
+                    </div>
+                </div>
+
+                <!-- FORM SUBMISSION TO /place-order -->
+                <form action="/place-order" method="POST">
+                    <input type="hidden" name="checkoutType" value="bookmyshow">
+                    <input type="hidden" name="cartData" value='<%= JSON.stringify(cart) %>'>
+                    <input type="hidden" name="totalAmount" value="<%= grandTotal %>">
+
+                    <div class="payment-actions">
+                        <button type="submit" id="pay-now-btn" class="btn pay-btn">
+                            <i class="fa-solid fa-lock"></i> Proceed to Pay ₹<%= Number(grandTotal || 0).toLocaleString('en-IN') %>
+                        </button>
+                        <p class="secure-note"><i class="fa-solid fa-shield-halved"></i> 100% Safe & Secure Payments</p>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    <% } %>
+</div>
+
+<style>
+.bms-checkout-container {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 0 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.checkout-header h2 { font-size: 26px; color: #1f2937; margin-bottom: 4px; }
+.checkout-header p { color: #6b7280; font-size: 14px; margin-bottom: 24px; }
+
+.checkout-layout {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 24px;
+}
+
+.booking-items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.booking-details-card, .payment-summary-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.bms-item-info { display: flex; gap: 20px; align-items: center; }
+.bms-poster { width: 100px; height: 130px; border-radius: 8px; object-fit: cover; }
+.bms-meta h3 { font-size: 18px; margin: 0 0 6px 0; color: #111827; }
+.meta-tag { font-size: 13px; color: #6b7280; margin-bottom: 6px; }
+.venue-name, .showtime { font-size: 14px; color: #374151; margin: 3px 0; }
+.item-price { font-size: 15px; font-weight: 600; color: #e11d48; margin-top: 6px; }
+
+.payment-summary-card { position: sticky; top: 20px; height: fit-content; }
+.payment-summary-card h3 { font-size: 18px; margin-top: 0; color: #111827; }
+.price-breakdown { margin: 20px 0; }
+.price-row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 12px; color: #4b5563; }
+.price-breakdown hr { border: none; border-top: 1px solid #e5e7eb; margin: 12px 0; }
+.total-row { font-size: 18px; font-weight: 700; color: #111827; margin-top: 14px; }
+
+.pay-btn {
+    width: 100%;
+    background-color: #e11d48;
+    color: #fff;
+    border: none;
+    padding: 14px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.pay-btn:hover { background-color: #be123c; }
+.secure-note { text-align: center; font-size: 12px; color: #9ca3af; margin-top: 12px; }
+
+.empty-checkout-card { text-align: center; padding: 60px 20px; background: #fff; border-radius: 12px; border: 1px solid #e5e7eb; }
+.empty-icon { font-size: 50px; color: #9ca3af; margin-bottom: 12px; }
+.explore-btn {
+    display: inline-block;
+    margin-top: 16px;
+    background-color: #e11d48;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .checkout-layout { grid-template-columns: 1fr; }
+    .bms-item-info { flex-direction: column; align-items: flex-start; }
+    .bms-poster { width: 100%; height: 200px; }
+}
+</style>
+
+<%- include("../../shopping/commonHeader/footer") %>

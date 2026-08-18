@@ -1,0 +1,305 @@
+<%- include('../../shopping/commonHeader/header') %>
+<%- include("../../shopping/commonHeader/navbar4") %>
+
+<style>
+/* =====================================================
+   BOOKMYSHOW DETAILS PAGE STYLES (COMPACT VERSION)
+===================================================== */
+.bms-details-wrapper {
+    background: #fdf8fa;
+    min-height: 85vh;
+    padding: 30px 15px;
+}
+
+.bms-details-card {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(230, 35, 78, 0.08);
+    border: 1px solid #f2dbe0;
+    overflow: hidden;
+    padding: 20px;
+    max-width: 850px;
+    margin: 0 auto;
+}
+
+.bms-img-container {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    height: 320px;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    background: #ffe6eb;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+.bms-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.bms-img-container:hover img {
+    transform: scale(1.04);
+}
+
+.bms-rating-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(4px);
+    color: #e6234e;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.bms-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 10px;
+}
+
+.bms-category-tag {
+    display: inline-block;
+    background: #ffe6eb;
+    color: #e6234e;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    width: fit-content;
+    margin-bottom: 8px;
+}
+
+.bms-title {
+    color: #222222;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 8px;
+}
+
+.bms-description {
+    color: #666666;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.bms-price-box {
+    background: #fff0f3;
+    border: 1px solid #fcd0d7;
+    padding: 8px 14px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: fit-content;
+}
+
+.bms-price-label {
+    font-size: 11px;
+    color: #888888;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.bms-price {
+    color: #e6234e;
+    font-size: 20px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.bms-book-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #e6234e;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(230, 35, 78, 0.2);
+}
+
+.bms-book-btn:hover {
+    background: #c7173e;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(230, 35, 78, 0.3);
+}
+
+.no-results-box {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.no-results-box i {
+    font-size: 4rem;
+    color: #e6234e;
+    margin-bottom: 15px;
+}
+
+@media (max-width: 576px) {
+    .bms-details-card {
+        padding: 15px;
+        max-width: 100%;
+    }
+    .bms-content {
+        padding-left: 0;
+        margin-top: 15px;
+    }
+    .bms-img-container {
+        height: 180px;
+        max-width: 180px;
+    }
+}
+</style>
+
+<div class="bms-details-wrapper">
+    <div class="container">
+        
+        <% 
+            // Normalize current product item
+            let currentItem = null;
+            if (typeof product !== 'undefined' && product) {
+                currentItem = product;
+            } else if (typeof searchResults !== 'undefined' && searchResults.length > 0) {
+                currentItem = searchResults[0];
+            } else if (typeof results !== 'undefined' && results.length > 0) {
+                currentItem = results[0];
+            }
+        %>
+
+        <% if (currentItem) { %>
+            <div class="bms-details-card">
+                <div class="row align-items-center">
+                    
+                    <!-- Left: Poster / Image Box -->
+                    <div class="col-md-6">
+                        <div class="bms-img-container">
+                            <img src="<%= currentItem.image || currentItem.poster || '/Images/default.png' %>" alt="<%= currentItem.title || currentItem.name %>">
+                            <span class="bms-rating-badge">
+                                <i class="fa-solid fa-star text-warning me-1"></i> <%= currentItem.rating || '4.5' %>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Right: Content Details -->
+                    <div class="col-md-6">
+                        <div class="bms-content">
+                            <span class="bms-category-tag"><%= currentItem.category || 'Event' %></span>
+                            
+                            <h1 class="bms-title"><%= currentItem.title || currentItem.name %></h1>
+                            
+                            <p class="bms-description"><%= currentItem.description || 'No description available.' %></p>
+
+                            <div class="bms-price-box">
+                                <span class="bms-price-label">Tickets From:</span>
+                                <h3 class="bms-price">₹<%= currentItem.price || '0' %></h3>
+                            </div>
+
+                            <div>
+                                <button
+                                    id="book-btn"
+                                    class="bms-book-btn"
+                                    onclick="addToShowCart('<%= currentItem._id %>')">
+                                    <i class="fa-solid fa-ticket"></i>
+                                    <span>Book Now</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        <% } else { %>
+            <!-- Fallback No Results Card -->
+            <div class="bms-details-card no-results-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <h2>No Results Found</h2>
+                <p class="text-muted">We couldn't find any match for your search query.</p>
+                <a href="/bookmyshow" class="bms-book-btn text-decoration-none mt-2">
+                    Explore Shows
+                </a>
+            </div>
+        <% } %>
+
+    </div>
+</div>
+
+<script>
+async function addToShowCart(productId){
+    const btn = document.getElementById("book-btn");
+    if (!btn) return;
+    const originalText = btn.innerHTML;
+
+    try {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Booking...`;
+
+        const response = await fetch("/bookmyshow/veloxBookShow/BookShowCart/add", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ productId: productId })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            btn.innerHTML = `<i class="fa-solid fa-circle-check"></i> Added!`;
+            updateBookShowCartCount();
+            
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }, 2000);
+        } else {
+            alert(data.message || "Could not add ticket");
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }
+
+    } catch (err) {
+        console.error(err);
+        alert("Something went wrong while booking.");
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
+}
+
+async function updateBookShowCartCount(){
+    try {
+        const response = await fetch("/bookmyshow/veloxBookShow/BookShowCart/count");
+        const data = await response.json();
+
+        const cartElement = document.getElementById("cart-count");
+        if (cartElement) {
+            cartElement.innerHTML = "(" + (data.count || 0) + ")";
+        }
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+updateBookShowCartCount();
+</script>
+
+<%- include("../../shopping/commonHeader/footer") %>

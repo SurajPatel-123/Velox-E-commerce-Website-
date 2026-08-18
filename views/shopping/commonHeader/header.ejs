@@ -1,0 +1,29 @@
+
+<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/header.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.min.css" integrity="sha512-ApSLB1Pd3/bZN8fWB/RG9YhN/7bd9Hkf3AGaE2mPfebjrxagjuBtx2GcgdqIlJkUzwylBo61r9Xa9NmgBI0swA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<nav>
+  <div class="container">
+    <div class="shop" style="cursor: pointer;" onclick="shopping()"><img class="icon1" src="/Images/icon1.png"><p><b>Shopping</b></p></div>
+    <div class="grocery" onclick="grocery()" style="cursor: pointer;"><img class="icon3" src="/Images/icon3.png"><p><b>Grocery</b></p></div>
+    <div class="travel" style="cursor: pointer;" onclick="travel()"><img class="icon2" src="/Images/icon4.png"><p><b>Travel</b></p></div>
+    <div class="book" onclick="bookmyshow()" style="cursor: pointer;"><img class="icon3" src="/Images/icon2.png"><p><b>BookMyShow</b></p></div>
+  </div>
+  <hr>
+</nav>
+<script>
+  function shopping(){
+    window.location.href="/";
+  };
+  function grocery(){
+    window.location.href="/grocery";
+  };
+  function travel(){
+    window.location.href="/travel";
+  };
+  function bookmyshow(){
+    window.location.href="/bookmyshow";
+  };
+  
+</script>

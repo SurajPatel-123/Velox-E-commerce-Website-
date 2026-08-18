@@ -1,0 +1,981 @@
+<%- include('../../shopping/commonHeader/header') %>
+<%- include("../../shopping/commonHeader/navbar2") %>
+
+<div class="grocery-page">
+
+    <!-- HERO -->
+    <section class="grocery-hero">
+
+        <div class="hero-content">
+
+            <span class="hero-tag">
+                <i class="fa-solid fa-leaf"></i>
+                Fresh & Healthy
+            </span>
+
+            <h1>
+                Fresh Grocery,
+                <br>
+                <span>Fresh Everyday.</span>
+            </h1>
+
+            <p>
+                Shop fresh fruits, vegetables, dairy products,
+                snacks and daily essentials all in one place.
+            </p>
+
+            <a href="#products" class="hero-btn">
+                Shop Groceries
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+
+        </div>
+
+        <div class="hero-visual">
+            <div class="hero-circle">
+                <i class="fa-solid fa-basket-shopping"></i>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- PRODUCTS -->
+    <section id="products">
+
+        <div class="section-header">
+
+            <div>
+                <h2>Fresh Picks For You</h2>
+                <p>Quality groceries for your everyday needs</p>
+            </div>
+
+        </div>
+
+
+        <div class="products-container">
+
+            <% products.slice(0, 12).forEach(product => { %>
+
+                <div class="product-card">
+
+                    <div class="product-image">
+
+                        <img
+                            src="<%= product.image %>"
+                            alt="<%= product.title %>"
+                        >
+
+                    </div>
+
+                    <div class="product-info">
+
+                        <span class="product-category">
+                            <%= product.category %>
+                        </span>
+
+                        <h3>
+                            <%= product.title %>
+                        </h3>
+
+                        <p class="product-description">
+                            <%= product.description %>
+                        </p>
+
+                        <div class="product-bottom">
+
+                            <strong>
+                                ₹<%= product.price %>
+                            </strong>
+
+                            <span class="rating">
+                                ⭐ <%= product.rating %>
+                            </span>
+
+                        </div>
+<!-- 
+                        <button  type="button"
+    class="add-cart"
+    onclick="event.preventDefault(); event.stopPropagation(); addToCart('<%= product._id %>')">>
+                            <i class="fa-solid fa-cart-plus"></i>
+                            Add to Cart
+                        </button> -->
+<div class="product-buttons">
+<!-- Add To Cart Button -->
+    <button
+        class="add-cart"
+        onclick="addToGroceryCart('<%= product._id %>')">
+
+        <i class="fa-solid fa-cart-plus"></i>
+        Add To Cart
+
+    </button>
+
+</div>
+                    </div>
+
+                </div>
+
+            <% }) %>
+
+        </div>
+
+    </section>
+
+
+    <!-- CATEGORIES -->
+    <section class="category-section">
+
+        <div class="section-header">
+
+            <div>
+                <h2>Shop By Category</h2>
+                <p>Find your everyday grocery essentials</p>
+            </div>
+
+        </div>
+
+
+        <div class="categories">
+
+            <a href="/grocery/category/Fruits%20%26%20Vegetables">
+                <i class="fa-solid fa-carrot"></i>
+                <span>Fruits & Vegetables</span>
+            </a>
+
+            <a href="/grocery/category/Dairy%20%26%20Bakery">
+                <i class="fa-solid fa-cheese"></i>
+                <span>Dairy & Bakery</span>
+            </a>
+
+            <a href="/grocery/category/Snacks">
+                <i class="fa-solid fa-cookie-bite"></i>
+                <span>Snacks</span>
+            </a>
+
+            <a href="/grocery/category/Beverages">
+                <i class="fa-solid fa-mug-hot"></i>
+                <span>Beverages</span>
+            </a>
+
+            <a href="/grocery/category/Food%20Grains">
+                <i class="fa-solid fa-wheat-awn"></i>
+                <span>Food Grains</span>
+            </a>
+
+            <a href="/grocery/category/Cooking%20Essentials">
+                <i class="fa-solid fa-kitchen-set"></i>
+                <span>Cooking Essentials</span>
+            </a>
+
+            <a href="/grocery/category/Personal%20Care">
+                <i class="fa-solid fa-pump-soap"></i>
+                <span>Personal Care</span>
+            </a>
+
+            <a href="/grocery/category/Household">
+                <i class="fa-solid fa-house"></i>
+                <span>Household</span>
+            </a>
+
+        </div>
+
+    </section>
+
+</div>
+
+<style>
+        /* =========================================================
+   VELOX GROCERY
+========================================================= */
+.product-buttons{
+    display:flex;
+    gap:10px;
+    margin-top:12px;
+}
+
+.add-cart,
+.buy-now{
+    flex:1;
+    height:42px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.add-cart{
+    background:#168a42;
+    color:#fff;
+}
+
+.buy-now{
+    background:#ff9800;
+    color:#fff;
+}
+
+.add-cart:hover{
+    background:#117337;
+}
+
+.buy-now:hover{
+    background:#e68900;
+}
+.grocery-page {
+    width: 100%;
+    min-height: 100vh;
+    background: #f5f7f5;
+    padding-bottom: 50px;
+    font-family: Arial, sans-serif;
+}
+
+.grocery-page *,
+.grocery-page *::before,
+.grocery-page *::after {
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.grocery-hero {
+    width: calc(100% - 30px);
+    max-width: 1380px;
+    min-height: 340px;
+
+    margin: 20px auto 0;
+
+    padding: 45px 65px;
+
+    border-radius: 18px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    position: relative;
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            110deg,
+            #e9f8ed 0%,
+            #d5f1dc 55%,
+            #bce6c7 100%
+        );
+}
+
+
+/* decorative shape */
+
+.grocery-hero::before {
+    content: "";
+
+    position: absolute;
+
+    width: 350px;
+    height: 350px;
+
+    right: 40px;
+    top: -190px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.35);
+}
+
+.grocery-hero::after {
+    content: "";
+
+    position: absolute;
+
+    width: 250px;
+    height: 250px;
+
+    right: -80px;
+    bottom: -130px;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,.3);
+}
+
+
+/* =========================================================
+   HERO CONTENT
+========================================================= */
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+
+    width: 58%;
+}
+
+
+.hero-tag {
+    display: inline-flex;
+
+    align-items: center;
+    gap: 7px;
+
+    padding: 7px 14px;
+
+    border-radius: 30px;
+
+    background: #168a42;
+    color: white;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    margin-bottom: 15px;
+}
+
+
+.hero-content h1 {
+    margin: 0;
+
+    font-size: 44px;
+    line-height: 1.12;
+
+    color: #173b24;
+
+    font-weight: 750;
+}
+
+
+.hero-content h1 span {
+    color: #168a42;
+}
+
+
+.hero-content p {
+    max-width: 560px;
+
+    margin: 16px 0 24px;
+
+    color: #5d6b61;
+
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+
+.hero-btn {
+    display: inline-flex;
+
+    align-items: center;
+    gap: 9px;
+
+    padding: 12px 20px;
+
+    border-radius: 7px;
+
+    background: #168a42;
+    color: white;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    transition: .25s;
+}
+
+
+.hero-btn:hover {
+    background: #0c6c31;
+
+    color: white;
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================================================
+   HERO ICON
+========================================================= */
+
+.hero-visual {
+    width: 38%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: relative;
+    z-index: 2;
+}
+
+
+.hero-circle {
+    width: 235px;
+    height: 235px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255,255,255,.6);
+
+    box-shadow:
+        0 18px 40px rgba(31,100,50,.12);
+}
+
+
+.hero-circle i {
+    font-size: 105px;
+
+    color: #168a42;
+}
+
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+#products,
+.category-section {
+    width: calc(100% - 30px);
+    max-width: 1380px;
+
+    margin: 35px auto 0;
+}
+
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 18px;
+}
+
+
+.section-header h2 {
+    margin: 0 0 5px;
+
+    color: #202820;
+
+    font-size: 24px;
+    font-weight: 700;
+}
+
+
+.section-header p {
+    margin: 0;
+
+    color: #7a837c;
+
+    font-size: 13px;
+}
+
+
+.view-all {
+    color: #168a42;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   PRODUCT GRID
+========================================================= */
+
+.products-container {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+
+/* =========================================================
+   PRODUCT CARD
+========================================================= */
+
+.product-card {
+    background: #fff;
+
+    border: 1px solid #e2e7e3;
+
+    border-radius: 10px;
+    margin-left: 4px;
+    overflow: hidden;
+
+    transition:
+        transform .25s,
+        box-shadow .25s;
+}
+
+
+.product-card:hover {
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.09);
+}
+
+
+/* =========================================================
+   PRODUCT IMAGE
+========================================================= */
+
+.product-image {
+    width: 100%;
+    height: 190px;
+
+    background: #fafafa;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-bottom: 1px solid #eeeeee;
+}
+
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition: transform .3s;
+}
+
+
+.product-card:hover .product-image img {
+    transform: scale(1.05);
+}
+
+
+/* =========================================================
+   PRODUCT DETAILS
+========================================================= */
+
+.product-info {
+    padding: 13px;
+}
+
+
+.product-category {
+    color: #168a42;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+}
+
+
+.product-info h3 {
+    margin: 6px 0;
+
+    color: #222;
+
+    font-size: 15px;
+    font-weight: 650;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.product-description {
+    height: 32px;
+
+    margin: 0 0 12px;
+
+    color: #777;
+
+    font-size: 11px;
+    line-height: 1.45;
+
+    overflow: hidden;
+}
+
+
+.product-bottom {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+.product-bottom strong {
+    color: #222;
+
+    font-size: 18px;
+}
+
+
+.rating {
+    padding: 4px 7px;
+
+    border-radius: 5px;
+
+    background: #168a42;
+
+    color: white;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   ADD CART
+========================================================= */
+
+.add-cart {
+    width: 100%;
+
+    margin-top: 11px;
+
+    padding: 9px;
+
+    border: 1px solid #168a42;
+
+    border-radius: 6px;
+
+    background: white;
+
+    color: #168a42;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+
+.add-cart:hover {
+    background: #168a42;
+
+    color: white;
+}
+
+
+/* =========================================================
+   CATEGORY
+========================================================= */
+
+.categories {
+    display: grid;
+
+    grid-template-columns: repeat(8, 1fr);
+
+    gap: 13px;
+}
+
+
+.categories a {
+    min-height: 125px;
+
+    padding: 15px 8px;
+
+    border: 1px solid #e2e7e3;
+
+    border-radius: 12px;
+
+    background: white;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 10px;
+
+    transition: .25s;
+}
+
+
+.categories a:hover {
+    transform: translateY(-4px);
+
+    border-color: #b8d9c0;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.07);
+}
+
+
+.categories a i {
+    width: 52px;
+    height: 52px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #e9f7ec;
+
+    color: #168a42;
+
+    font-size: 21px;
+}
+
+
+.categories a span {
+    text-align: center;
+
+    color: #333;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1200px) {
+
+    .products-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    .categories {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+}
+
+
+/* =========================================================
+   TABLET SMALL
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .grocery-hero {
+        padding: 35px 40px;
+    }
+
+    .hero-content {
+        width: 65%;
+    }
+
+    .hero-content h1 {
+        font-size: 36px;
+    }
+
+    .hero-visual {
+        width: 35%;
+    }
+
+    .hero-circle {
+        width: 180px;
+        height: 180px;
+    }
+
+    .hero-circle i {
+        font-size: 80px;
+    }
+
+    .products-container {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 650px) {
+
+    .grocery-hero {
+        width: calc(100% - 20px);
+
+        min-height: 300px;
+
+        padding: 30px 24px;
+
+        margin-top: 10px;
+    }
+
+    .hero-content {
+        width: 100%;
+    }
+
+    .hero-content h1 {
+        font-size: 30px;
+    }
+
+    .hero-content p {
+        font-size: 13px;
+    }
+
+    .hero-visual {
+        display: none;
+    }
+
+    #products,
+    .category-section {
+        width: calc(100% - 20px);
+
+        margin-top: 28px;
+    }
+
+    .section-header h2 {
+        font-size: 20px;
+    }
+
+    .section-header p {
+        font-size: 11px;
+    }
+
+    .products-container {
+        grid-template-columns: repeat(2, 1fr);
+
+        gap: 10px;
+    }
+
+    .product-image {
+        height: 155px;
+    }
+
+    .product-info {
+        padding: 10px;
+    }
+
+    .product-info h3 {
+        font-size: 13px;
+    }
+
+    .product-bottom strong {
+        font-size: 16px;
+    }
+
+    .categories {
+        grid-template-columns: repeat(2, 1fr);
+
+        gap: 10px;
+    }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
+@media (max-width: 400px) {
+
+    .hero-content h1 {
+        font-size: 27px;
+    }
+
+    .hero-content p {
+        font-size: 12px;
+    }
+
+    .products-container {
+        gap: 8px;
+    }
+
+    .product-image {
+        height: 140px;
+    }
+
+    .product-info h3 {
+        font-size: 12px;
+    }
+
+    .product-description {
+        font-size: 10px;
+    }
+
+    .categories a {
+        min-height: 105px;
+    }
+
+}
+</style>
+<script>
+
+async function addToGroceryCart(productId){
+
+    try{
+
+        const response = await fetch("/groceryCart/add",{
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+                productId:productId
+            })
+
+        });
+
+        const data = await response.json();
+
+        if(data.success){
+
+            alert("Product added to Grocery Cart");
+
+            updateGroceryCartCount();
+
+        }else{
+
+            alert(data.message);
+
+        }
+
+    }catch(err){
+
+        console.log(err);
+
+        alert("Something went wrong");
+
+    }
+
+}
+
+async function updateGroceryCartCount(){
+
+    try{
+
+        const response = await fetch("/groceryCart/count");
+
+        const data = await response.json();
+
+        document.getElementById("cart-count").innerHTML =
+        "(" + data.count + ")";
+
+    }catch(err){
+
+        console.log(err);
+
+    }
+
+}
+
+updateGroceryCartCount();
+
+</script>
+<%- include("../../shopping/commonHeader/footer") %>

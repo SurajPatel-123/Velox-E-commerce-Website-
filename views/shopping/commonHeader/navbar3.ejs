@@ -1,0 +1,574 @@
+<style>
+    /* ================= TRAVEL NAVBAR ================= */
+
+    .travel-navbar {
+        width: 100%;
+    }
+
+    /* ================= TOP NAVBAR ================= */
+
+    .container1 {
+        height: 45px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        padding-top: 5px;
+        box-sizing: border-box;
+    }
+
+    /* ================= VELOX LOGO ================= */
+
+    .icon5 {
+        height: 30px;
+        width: 40px;
+        border-radius: 7px;
+    }
+
+    .velox {
+        height: 40px;
+        width: 110px;
+        display: flex;
+        align-items: center;
+        padding-left: 5px;
+        box-sizing: border-box;
+    }
+
+    .velox:hover {
+        border: 1px solid #00b8dc;
+        border-radius: 5px;
+    }
+
+    /* ================= LOCATION ================= */
+
+    .location { color: #777; height: 40px; width: 120px; padding-left: 5px; display: flex; align-items: center; gap: 5px; cursor: pointer; box-sizing: border-box; }
+    .location i { color: #00a8cc !important; }
+    .location:hover { color: #009ec1; border: 1px solid #0077b6; border-radius: 5px; }
+
+    /* ================= SEARCH ================= */
+    .search-wrapper { position: relative; }
+    .search-box { height: 35px; width: 430px; display: flex; align-items: center; }
+    .search-category { height: 35px; width: 100px; background-color: #eef8f1; border: 1.5px solid #00a8cc; border-right: none; outline: none; border-radius: 7px 0 0 7px; color: #333; cursor: pointer; }
+    .search { height: 35px; width: 260px; padding-left: 8px; outline: none; border: 1.5px solid #00b8dc; box-sizing: border-box; }
+    .search:focus { border-color: #00a8cc; }
+    .search-btn { height: 35px; width: 70px; border: none; display: flex; align-items: center; justify-content: center; gap: 5px; outline: none; background-color: #009ec1; color: white; cursor: pointer; border-radius: 0 7px 7px 0; }
+    .search-btn:hover { background-color: #0077b6; }
+    
+    .search-suggestions {
+        display: none;
+        position: absolute;
+        top: 38px;
+        left: 0;
+        width: 100%;
+        background-color: #fff;
+        border: 1px solid #009ec1;
+        border-radius: 0 0 7px 7px;
+        box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+        z-index: 999;
+    }
+    .search-suggestion-item {
+        padding: 8px 12px;
+        cursor: pointer;
+        font-size: 14px;
+        color: #333;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .search-suggestion-item:hover {
+        background-color: #eef8f1;
+        color: #00b8dc;
+    }
+    .suggestion-category {
+        margin-left: auto;
+        font-size: 11px;
+        color: #888;
+        background: #e0f2fe;
+        padding: 2px 6px;
+        border-radius: 4px;
+    }
+
+    /* ================= USER ================= */
+
+    .user {
+        position: relative;
+        align-items: center; 
+        height: 33px; 
+        display: flex; 
+        color: #00b8dc;
+        padding: 0 8px; 
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+    .user:hover {
+        color: #00b8dc;
+        border: 1px solid #00b8dc;
+    }
+
+    .user-dropdown {
+        display: none;
+        position: absolute;
+        top: 34px;
+        right: 0;
+        background-color: #ffffff;
+        box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        width: 120px;
+        z-index: 1000;
+        overflow: hidden;
+    }
+
+    .user-dropdown a {
+        display: block;
+        padding: 8px 12px;
+        color: #333;
+        text-decoration: none;
+        font-size: 14px;
+        transition: background 0.2s ease;
+    }
+
+    .user-dropdown a:hover {
+        background-color: #f1f1f1;
+        color: #00b8dc;
+    }
+
+    .user:hover .user-dropdown {
+        display: block;
+    }
+
+    /* ================= WISHLIST ================= */
+
+    .wish {
+        width: 90px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding-left: 5px;
+        cursor: pointer;
+        box-sizing: border-box;
+    }
+
+    .wish i {
+        color: #00b8dc;
+    }
+
+    .wish p {
+        margin: 0;
+        color: #00b8dc;
+    }
+
+    .wish:hover {
+        border: 1px solid #00b8dc;
+        border-radius: 5px;
+    }
+
+    /* ================= CART ================= */
+
+    .cart {
+        width: 100px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding-left: 5px;
+        cursor: pointer;
+        box-sizing: border-box;
+    }
+
+    .cart i {
+        color: #00b8dc;
+    }
+
+    .cart p {
+        margin: 0;
+        color: #00b8dc;
+    }
+
+    .cart span {
+        color: #00b8dc;
+    }
+
+    .cart:hover {
+        border: 1px solid #00b8dc;
+        border-radius: 5px;
+    }
+
+    /* ================= TRAVEL MENU ================= */
+
+    .travel-menu {
+        width: 100%;
+        height: 40px;
+        display: flex;
+        margin-top: -10px;
+        align-items: center;
+        justify-content: space-evenly;
+        border-top: 1px solid #00b8dc;
+        border-bottom: 1px solid #00a8cc;
+        overflow: hidden;
+    }
+
+    .travel-menu div {
+        height: 35px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 0 12px;
+        white-space: nowrap;
+        cursor: pointer;
+        color: #00b8dc;
+        transition: all 0.2s ease;
+    }
+
+    .travel-menu div:hover {
+        color: white;
+        background-color: #009ec1;
+        border-radius: 5px;
+    }
+
+    .travel-menu i {
+        color: #00b8dc;
+    }
+
+    .travel-menu div:hover i {
+        color: white;
+    }
+
+    .travel-menu div:first-child {
+        font-weight: 600;
+    }
+</style>
+
+<nav class="travel-navbar">
+
+    <!-- ================= TOP NAVBAR ================= -->
+
+    <div class="container1">
+
+        <!-- VELOX LOGO -->
+
+        <div style="cursor: pointer;" onclick="window.location.reload()" class="velox">
+            <img class="icon5" src="/Images/icon5.png">
+            <p style="margin-left: 5px; font-size: 1.4rem; color: #00b8dc;">
+                <b>Velox</b>
+            </p>
+        </div>
+
+        <!-- ================= LOCATION ================= -->
+
+        <div class="location" onclick="getUserLocation()" style="display: flex; align-items: center; width: auto; max-width: 280px; cursor: pointer; gap: 8px;">
+            <i style="color:#0077b6; font-size: 18px;" class="fa-solid fa-location-crosshairs"></i>
+            <p id="location-text" style="margin: 0; line-height: 1.2; color: #333;">
+                <span style="font-weight: 600; font-size: 14px;">Enter your location</span>
+            </p>
+        </div>
+
+        <!-- ================= SEARCH ================= -->
+
+        <div class="search-wrapper">
+            <div class="search-box">
+                <select id="searchCategory" class="search-category">
+                    <option value="all">All</option>
+                    <option value="Beach Destinations">Beaches</option>
+                    <option value="Hill Stations">Hill Stations</option>
+                    <option value="Heritage & Culture">Holiday</option>
+                    <option value="International Trips">International</option>
+                    <option value="Hotels & Stays">Hotels</option>
+                    <option value="Transport">Transport</option>
+                </select>
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    class="search"
+                    placeholder="Search destinations, tours, hotels..."
+                    autocomplete="off"
+                >
+
+                <button
+                    type="button"
+                    id="searchButton"
+                    class="search-btn"
+                >
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <span>Search</span>
+                </button>
+            </div>
+
+            <!-- Search Suggestions -->
+            <div id="searchSuggestions" class="search-suggestions"></div>
+        </div>
+
+        <!-- ================= USER ================= -->
+
+        <div class="user">
+            <i class="fa-regular fa-user" style="margin-right: 5px; color: #00b8dc;"></i>
+            
+            <% if (typeof user !== 'undefined' && user) { %>
+                <!-- USER IS LOGGED IN -->
+                <span style="font-size: 15px; font-weight: 600; color: #00b8dc;">
+                    Hi, <%= (user.name || user.username || 'User').split(' ')[0] %>
+                </span>
+
+                <!-- DROPDOWN ON HOVER -->
+                <div class="user-dropdown">
+                    <a href="/auth/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                </div>
+            <% } else { %>
+                <!-- USER IS NOT LOGGED IN -->
+                <a onclick="signup()" style="font-size: 15px; color: #00b8dc; cursor: pointer;">SignUp /</a>
+                <a onclick="login()" style="font-size: 15px; color: #00b8dc; cursor: pointer; margin-left: 2px;">Login</a>
+            <% } %>
+        </div>
+
+        <!-- ================= WISHLIST ================= -->
+
+        <div onclick="wishlist()" class="wish" style="cursor: pointer; display: flex; gap: 3px; padding-left: 5px; align-items: center; height: 33px; width: 83px;">
+            <i class="fa-regular fa-heart"></i>
+            <p>Wishlist</p>
+        </div>
+
+        <!-- ================= CART ================= -->
+
+        <div class="cart" onclick="window.location.href='/travel/veloxTravel/travelCart'">
+            <i style="font-size:23px;" class="fa-solid fa-suitcase-rolling"></i>
+            <p>Trips</p>
+            <span id="cart-count">(0)</span>
+        </div>
+
+    </div>
+    <hr>
+
+    <!-- ================= TRAVEL CATEGORY MENU ================= -->
+
+    <div class="travel-menu">
+
+        <div onclick="filterByCategory('all')">
+            <i class="fa-solid fa-layer-group"></i>
+            <span>Explore</span>
+        </div>
+
+        <div onclick="flights()">
+            <i class="fa-solid fa-plane"></i>
+            <span>Flights</span>
+        </div>
+
+        <div onclick="hotels()">
+            <i class="fa-solid fa-hotel"></i>
+            <span>Hotels</span>
+        </div>
+
+        <div onclick="trains()">
+            <i class="fa-solid fa-train"></i>
+            <span>Trains</span>
+        </div>
+
+        <div onclick="buses()">
+            <i class="fa-solid fa-bus"></i>
+            <span>Buses</span>
+        </div>
+
+        <div onclick="cabs()">
+            <i class="fa-solid fa-taxi"></i>
+            <span>Cabs</span>
+        </div>
+
+        <div onclick="tour()">
+            <i class="fa-solid fa-map-location-dot"></i>
+            <span>Tour Packages</span>
+        </div>
+
+        <div onclick="destination()">
+            <i class="fa-solid fa-earth-americas"></i>
+            <span>Destinations</span>
+        </div>
+
+    </div>
+
+</nav>
+
+<script>
+      function flights() { window.location.href = "/travel/category/Flights"; }
+    function hotels() { window.location.href = "/travel/category/Hotels"; }
+    function trains() { window.location.href = "/travel/category/Trains"; }
+        function destination() {window.location.href="/travel"};
+      function buses() { window.location.href = "/travel/category/Buses"; }
+    function cabs() { window.location.href = "/travel/category/Holiday%20Packages"; }
+    function tour() { window.location.href = "/travel/category/International%20Trips"; }
+    // Navigation Functions
+    function wishlist() { window.location.href = "/wishlist/travel"; }
+    function signup() { window.location.href = "/auth/signup"; }
+    function login() { window.location.href = "/auth/login"; }
+
+    async function updateCartCount() {
+        try {
+            const response = await fetch("/travel/veloxTravel/travelCart/count");
+            const data = await response.json();
+            const countElement = document.querySelector("#cart-count");
+            if (countElement) {
+                countElement.textContent = `(${data.count || 0})`;
+            }
+        } catch (error) {
+            console.log("Cart count error:", error);
+        }
+    }
+    updateCartCount();
+
+    /* ================= TRAVEL SEARCH LOGIC ================= */
+
+    const searchInput = document.getElementById("searchInput");
+    const searchCategory = document.getElementById("searchCategory");
+    const searchButton = document.getElementById("searchButton");
+    const searchSuggestions = document.getElementById("searchSuggestions");
+
+    const suggestions = [
+        { name: ["Goa", "Goa Beaches", "North Goa", "South Goa", "Goa Tour"], category: "Beach Destinations" },
+        { name: ["Manali", "Shimla", "Kashmiri Valley", "Gulmarg", "Leh Ladakh"], category: "Hotels" },
+        { name: ["Taj Mahal", "Agra", "Jaipur", "Udaipur", "Varanasi", "Delhi"], category: "Mountain Destinations" },
+        { name: ["Scuba Diving", "Trekking", "Paragliding", "River Rafting", "Safari"], category: "Trains" },
+        { name: ["Dubai", "Thailand", "Bali", "Maldives", "Singapore", "Europe"], category: "International Trips" },
+        { name: ["Luxury Resorts", "Budget Hotels", "Homestays", "Beachfront Villas"], category: "Holiday Packages" },
+        { name: ["Flight Booking", "Train Tickets", "Cab Rental", "Airport Transfer"], category: "Buses" }
+    ];
+
+    // Main Search Redirection Function
+    function performSearch() {
+        const query = searchInput.value.trim();
+        const category = searchCategory.value;
+
+        if (!query && category === "all") {
+            searchInput.focus();
+            return;
+        }
+
+        const params = new URLSearchParams();
+        if (query) params.set("q", query); // MATCHED WITH EXPRESS ROUTE
+        if (category !== "all") params.set("category", category);
+
+        // Redirects to your router endpoint
+        window.location.href = `/travel/search?${params.toString()}`;
+    }
+
+    function filterByCategory(cat) {
+        searchCategory.value = cat;
+        performSearch();
+    }
+
+    searchButton.addEventListener("click", performSearch);
+
+    searchInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            performSearch();
+        }
+    });
+
+    searchCategory.addEventListener("change", function () {
+        if (searchInput.value.trim()) {
+            performSearch();
+        }
+    });
+
+    /* Auto Suggestion Handler */
+    searchInput.addEventListener("input", function () {
+        const value = searchInput.value.trim().toLowerCase();
+        searchSuggestions.innerHTML = "";
+
+        if (!value) {
+            searchSuggestions.style.display = "none";
+            return;
+        }
+
+        const selectedCategory = searchCategory.value;
+        const matches = [];
+
+        suggestions.forEach(item => {
+            const matchesCategory = selectedCategory === "all" || item.category === selectedCategory;
+            if (!matchesCategory) return;
+
+            const namesArray = Array.isArray(item.name) ? item.name : [item.name];
+
+            namesArray.forEach(term => {
+                if (term.toLowerCase().includes(value)) {
+                    matches.push({
+                        displayName: term,
+                        category: item.category
+                    });
+                }
+            });
+        });
+
+        if (matches.length === 0) {
+            searchSuggestions.style.display = "none";
+            return;
+        }
+
+        matches.slice(0, 6).forEach(match => {
+            const suggestion = document.createElement("div");
+            suggestion.className = "search-suggestion-item";
+            
+            suggestion.innerHTML = `
+                <i class="fa-solid fa-location-dot"></i>
+                <span class="suggestion-text">${match.displayName}</span>
+                <small class="suggestion-category">${match.category}</small>
+            `;
+
+            suggestion.addEventListener("click", function () {
+                searchInput.value = match.displayName;
+                searchCategory.value = match.category;
+                performSearch();
+            });
+
+            searchSuggestions.appendChild(suggestion);
+        });
+
+        searchSuggestions.style.display = "block";
+    });
+
+    document.addEventListener("click", function (event) {
+        if (!event.target.closest(".search-wrapper")) {
+            searchSuggestions.style.display = "none";
+        }
+    });
+
+    // Geolocation API
+    async function getUserLocation() {
+        const locationText = document.getElementById("location-text");
+        if (!navigator.geolocation) {
+            alert("Geolocation is not supported by your browser");
+            return;
+        }
+
+        locationText.innerHTML = `<span style="font-size: 13px; color: #666;">Locating...</span>`;
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+
+                try {
+                    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
+                    const data = await response.json();
+                    const address = data.address;
+
+                    const mainCity = address.city || address.town || address.village || address.suburb || "Detected Location";
+                    const state = address.state || "";
+
+                    locationText.innerHTML = `
+                        <span style="font-weight: bold; font-size: 14px; display: block; color: #111;">${mainCity}</span>
+                        <span style="font-size: 11px; color: #666; display: block;">${state}</span>
+                    `;
+                } catch (error) {
+                    console.error("Geocoding Error:", error);
+                    locationText.innerHTML = `<span style="font-size: 13px; color: red;">Location Error</span>`;
+                }
+            },
+            (error) => {
+                alert("Unable to fetch location. Please grant permission.");
+                locationText.innerHTML = `<span style="font-size: 13px;">Enter location</span>`;
+            }
+        );
+    }
+</script>

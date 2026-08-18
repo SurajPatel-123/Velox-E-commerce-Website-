@@ -1,0 +1,399 @@
+<%- include("../../shopping/commonheader/header") %>
+<%- include("../../shopping/commonheader/navbar3") %>
+<hr>
+
+<% 
+  // Safe Variable Declaration
+  const wishlistItems = (typeof products !== 'undefined' && Array.isArray(products)) ? products : 
+                        (typeof travelItems !== 'undefined' && Array.isArray(travelItems)) ? travelItems : []; 
+%>
+
+<div class="travel-wishlist-page">
+
+    <!-- PAGE HEADER -->
+    <div class="wishlist-header">
+        <h2>✈️ My Saved Destinations & Packages (<span id="wishlist-count"><%= wishlistItems.length %></span>)</h2>
+        <p>Your saved trips, flights, hotels, and holiday packages in one place.</p>
+    </div>
+
+    <% if (wishlistItems.length === 0) { %>
+        <!-- EMPTY STATE -->
+        <div id="empty-msg" class="empty-wishlist-card">
+            <i class="fa-solid fa-heart-crack empty-icon"></i>
+            <h3>Your travel wishlist is empty!</h3>
+            <p>Explore exciting destinations and click the heart icon to save your dream trips.</p>
+            <a href="/travel" class="explore-btn">Explore Destinations</a>
+        </div>
+    <% } else { %>
+        <!-- GRID CONTAINER -->
+        <div id="wishlist-grid" class="travel-wishlist-grid">
+            <% wishlistItems.forEach(item => { %>
+                <div id="product-card-<%= item._id %>" class="travel-card">
+                    
+                    <!-- IMAGE WRAPPER -->
+                    <div class="card-img-wrapper">
+                        <a href="/travel/booking/<%= item._id %>">
+                            <img src="<%= item.image %>" alt="<%= item.title %>" loading="lazy">
+                        </a>
+                        <span class="badge-duration"><%= item.duration || 'Top Deal' %></span>
+                    </div>
+
+                    <!-- DETAILS SECTION -->
+                    <div class="card-details">
+                        <div class="location-tag">
+                            <i class="fa-solid fa-location-dot"></i> <%= item.location || 'Explore Destination' %>
+                        </div>
+
+                        <a href="/travel/booking/<%= item._id %>" class="card-title-link">
+                            <h3><%= item.title %></h3>
+                        </a>
+
+                        <div class="rating-box">
+                            ⭐ <%= item.rating || '4.5' %> <span class="reviews">(<%= item.reviewsCount || '100+' %> reviews)</span>
+                        </div>
+
+                        <div class="price-box">
+                            <span class="price-label">Starting from</span>
+                            <div class="price">₹<%= item.price ? item.price.toLocaleString("en-IN") : '0' %></div>
+                        </div>
+
+                        <!-- CARD ACTIONS (BUTTONS) -->
+                        <div class="card-actions">
+                            <button type="button" class="btn book-now-btn" onclick="addToCart('<%= item._id %>')">
+                                <i class="fa-solid fa-plane-departure"></i> Book Now
+                            </button>
+
+                            <button type="button" class="btn remove-btn" onclick="removeFromWishlist('<%= item._id %>', event)">
+                                <i class="fa-solid fa-trash"></i> Remove
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            <% }) %>
+        </div>
+    <% } %>
+
+</div>
+
+<%- include("../../shopping/commonheader/footer") %>
+
+<style>
+/* =========================
+   PAGE LAYOUT & THEME
+========================= */
+
+.travel-wishlist-page {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+.wishlist-header h2 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #0c4a6e;
+}
+
+.wishlist-header p {
+    margin: 6px 0 25px 0;
+    font-size: 15px;
+    color: #0284c7;
+}
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+.empty-wishlist-card {
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid #e0f2fe;
+    border-radius: 16px;
+    padding: 60px 20px;
+    margin-top: 20px;
+}
+
+.empty-icon {
+    font-size: 50px;
+    color: #cbd5e1;
+    margin-bottom: 15px;
+}
+
+.empty-wishlist-card h3 {
+    font-size: 22px;
+    color: #0f172a;
+    margin: 0 0 8px 0;
+}
+
+.empty-wishlist-card p {
+    color: #64748b;
+    margin-bottom: 20px;
+}
+
+.explore-btn {
+    display: inline-block;
+    background-color: #0284c7;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background 0.2s ease;
+}
+
+.explore-btn:hover {
+    background-color: #0369a1;
+}
+
+/* =========================
+   GRID & CARDS
+========================= */
+
+.travel-wishlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.travel-card {
+    background: #ffffff;
+    border: 1px solid #e0f2fe;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.travel-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(2, 132, 199, 0.15);
+}
+
+.card-img-wrapper {
+    position: relative;
+    width: 100%;
+    height: 180px;
+    background: #e2e8f0;
+}
+
+.card-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.badge-duration {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(4px);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+/* =========================
+   DETAILS & BUTTONS
+========================= */
+
+.card-details {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.location-tag {
+    font-size: 12px;
+    font-weight: 600;
+    color: #0284c7;
+    margin-bottom: 6px;
+}
+
+.card-title-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.card-details h3 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #0f172a;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.rating-box {
+    font-size: 13px;
+    font-weight: 600;
+    color: #d97706;
+    margin-bottom: 10px;
+}
+
+.reviews {
+    color: #94a3b8;
+    font-weight: 400;
+    font-size: 12px;
+}
+
+.price-box {
+    margin-top: auto;
+    margin-bottom: 15px;
+}
+
+.price-label {
+    font-size: 11px;
+    color: #94a3b8;
+    display: block;
+}
+
+.price {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0284c7;
+}
+
+.card-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.book-now-btn {
+    background-color: #0284c7;
+    color: white !important;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    text-align: center;
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background 0.2s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.book-now-btn:hover {
+    background-color: #0369a1;
+}
+
+.remove-btn {
+    background-color: #ef4444;
+    color: white !important;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: background 0.2s ease;
+}
+
+.remove-btn:hover {
+    background-color: #dc2626;
+}
+</style>
+
+<script>
+// Travel Cart me Item add karke Cart Page redirect karne ke liye function
+async function addToCart(itemId) {
+    if (!itemId) {
+        alert("Invalid Item ID");
+        return;
+    }
+
+    try {
+        const response = await fetch('/travel/veloxTravel/travelCart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ productId: itemId, quantity: 1 })
+        });
+
+        if (response.ok) {
+            window.location.href = "/travel/veloxTravel/travelCart";
+        } else {
+            const data = await response.json().catch(() => ({}));
+            alert(data.message || "Failed to add package to cart. Please try again.");
+        }
+    } catch (err) {
+        console.error("Cart error:", err);
+        alert("A network error occurred while adding to cart.");
+    }
+}
+
+async function removeFromWishlist(productId, event) {
+    if (event) event.stopPropagation();
+
+    if (!confirm("Are you sure you want to remove this destination from your wishlist?")) return;
+
+    const endpoints = [
+        window.location.pathname.replace(/\/$/, '') + '/remove',
+        '/travel/wishlist/remove',
+        '/wishlist/remove'
+    ];
+
+    let success = false;
+
+    for (let url of endpoints) {
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ productId: productId })
+            });
+
+            const data = await response.json().catch(() => null);
+
+            if (response.ok && data && data.success) {
+                success = true;
+                const card = document.getElementById(`product-card-${productId}`);
+                if (card) {
+                    card.remove();
+                }
+
+                const countSpan = document.getElementById('wishlist-count');
+                if (countSpan) {
+                    let currentCount = parseInt(countSpan.innerText) || 0;
+                    currentCount = Math.max(0, currentCount - 1);
+                    countSpan.innerText = currentCount;
+
+                    if (currentCount === 0) {
+                        window.location.reload();
+                    }
+                }
+                break;
+            }
+        } catch (err) {
+            console.warn(`Attempt failed for endpoint ${url}:`, err);
+        }
+    }
+
+    if (!success) {
+        alert("Failed to remove item. Please refresh the page and try again.");
+    }
+}
+</script>

@@ -1,0 +1,451 @@
+<%- include("../../shopping/commonHeader/header") %>
+<%- include("../../shopping/commonHeader/navbar3") %>
+<hr>
+
+<div class="mountains-travel-page">
+
+    <!-- HERO HEADER SECTION -->
+    <div class="mountains-header">
+        <h2>🏔️ Mountain & Hill Station Escapes</h2>
+        <p>Escape to serene peaks, scenic valleys, and thrilling mountain trekking tours!</p>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="mountains-container">
+
+        <% 
+            const mountainList = (typeof mountains !== 'undefined') ? mountains : 
+                               (typeof mountain !== 'undefined') ? mountain : 
+                               (typeof hillStations !== 'undefined') ? hillStations :
+                               (typeof products !== 'undefined') ? products : []; 
+        %>
+
+        <% mountainList.forEach(item => { %>
+            <div class="mountains-card">
+                <a href="/travel/mountain/<%= item._id %>" class="mountains-link">
+
+                    <!-- IMAGE CONTAINER WITH WISHLIST BUTTON -->
+                    <div class="mountains-img-wrapper">
+                        <button 
+                            type="button" 
+                            class="wishlist-icon-btn" 
+                            onclick="event.preventDefault(); event.stopPropagation(); toggleWishlist('<%= item._id %>', this)"
+                            aria-label="Save to Wishlist"
+                        >
+                            <% if (typeof user !== 'undefined' && user && user.wishlist && user.wishlist.includes(item._id)) { %>
+                                <i class="fa-solid fa-heart active-heart"></i>
+                            <% } else { %>
+                                <i class="fa-regular fa-heart"></i>
+                            <% } %>
+                        </button>
+
+                        <img src="<%= item.image %>" alt="<%= item.title %>" loading="lazy">
+                        <span class="badge-duration"><%= item.duration || '4 Days / 3 Nights' %></span>
+                    </div>
+
+                    <!-- CARD DETAILS -->
+                    <div class="mountains-details">
+                        <div class="mountains-location">
+                            <i class="fa-solid fa-mountain"></i> <%= item.location || item.region || 'Hill Station' %>
+                        </div>
+
+                        <h3><%= item.title %></h3>
+
+                        <p class="description"><%= item.description %></p>
+
+                        <div class="meta-info">
+                            <div class="rating">
+                                ⭐ <%= item.rating %> <span class="reviews">(<%= item.reviewsCount || '130+' %> reviews)</span>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <div class="price-wrapper">
+                                <span class="price-label">Starting from</span>
+                                <div class="price">₹<%= item.price.toLocaleString("en-IN") %></div>
+                            </div>
+
+                            <button type="button"
+                                class="book-now-btn"
+                                onclick="event.preventDefault(); event.stopPropagation(); addToCart('<%= item._id %>')">  
+                                <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+
+                </a>
+            </div>
+        <% }) %>
+
+    </div>
+
+</div>
+
+<%- include("../../shopping/commonHeader/footer") %>
+
+<style>
+/* =========================
+   GLOBAL RESET
+========================= */
+
+.mountains-travel-page,
+.mountains-travel-page * {
+    box-sizing: border-box;
+}
+
+/* =========================
+   PAGE CONTAINER
+========================= */
+
+.mountains-travel-page {
+    width: 100%;
+    max-width: 100vw;
+    background: #f0f7ff; /* Soft Oceanic Breeze Background */
+    padding: 25px 30px;
+    overflow-x: hidden;
+}
+
+/* =========================
+   PAGE HEADER
+========================= */
+
+.mountains-header {
+    margin: 0 0 30px 5px;
+}
+
+.mountains-header h2 {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 700;
+    color: #0c4a6e;
+}
+
+.mountains-header p {
+    margin: 8px 0 0;
+    font-size: 15px;
+    color: #0284c7;
+}
+
+/* =========================
+   GRID CONTAINER
+========================= */
+
+.mountains-container {
+    width: 100%;
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+}
+
+/* =========================
+   MOUNTAINS CARD
+========================= */
+
+.mountains-card {
+    width: 100% !important;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: #ffffff;
+    border: 1px solid #e0f2fe;
+}
+
+.mountains-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(2, 132, 199, 0.15);
+}
+
+.mountains-link {
+    width: 100%;
+    height: 100%;
+    display: flex !important;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+}
+
+/* =========================
+   IMAGE & BADGE
+========================= */
+
+.mountains-img-wrapper {
+    width: 100%;
+    height: 220px !important;
+    position: relative;
+    overflow: hidden;
+    background: #e2e8f0;
+}
+
+.mountains-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.mountains-card:hover .mountains-img-wrapper img {
+    transform: scale(1.08);
+}
+
+.badge-duration {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(4px);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+/* =========================
+   WISHLIST BUTTON
+========================= */
+
+.wishlist-icon-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(4px);
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    color: #64748b;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    z-index: 10;
+    outline: none;
+}
+
+.wishlist-icon-btn:hover {
+    background: #ffffff;
+    color: #e63946;
+}
+
+.wishlist-icon-btn .active-heart {
+    color: #e63946 !important;
+    animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+/* =========================
+   MOUNTAINS DETAILS
+========================= */
+
+.mountains-details {
+    width: 100%;
+    padding: 18px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.mountains-location {
+    font-size: 12px;
+    font-weight: 600;
+    color: #0284c7;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.mountains-travel-page .mountains-details h3 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: #0f172a;
+    min-height: 44px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.mountains-travel-page .mountains-details .description {
+    margin: 8px 0 14px 0;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #64748b;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 36px;
+}
+
+.meta-info {
+    margin-bottom: 14px;
+}
+
+.rating {
+    font-size: 13px;
+    font-weight: 600;
+    color: #d97706;
+}
+
+.reviews {
+    color: #94a3b8;
+    font-weight: 400;
+    font-size: 12px;
+}
+
+/* =========================
+   FOOTER & BUTTON
+========================= */
+
+.card-footer {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.price-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.price-label {
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+.price {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0284c7;
+}
+
+.book-now-btn {
+    cursor: pointer;
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0 14px;
+    height: 38px;
+    gap: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #0284c7;
+    color: white;
+    transition: background-color 0.2s ease;
+}
+
+.book-now-btn:hover {
+    background-color: #0369a1;
+}
+
+/* =========================
+   RESPONSIVE BREAKPOINTS
+========================= */
+
+@media (max-width: 1200px) {
+    .mountains-travel-page .mountains-container {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 850px) {
+    .mountains-travel-page {
+        padding: 15px;
+    }
+
+    .mountains-travel-page .mountains-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .mountains-travel-page .mountains-container {
+        grid-template-columns: 1fr !important;
+    }
+
+    .mountains-img-wrapper {
+        height: 200px !important;
+    }
+}
+</style>
+
+<script>
+const currentUser = JSON.parse('<%- JSON.stringify(typeof user !== "undefined" ? user : null) %>');
+
+// Add to Cart Function for Mountains
+async function addToCart(itemId) {
+    try {
+        const response = await fetch('/travel/veloxTravel/travelCart/add', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ productId: itemId, quantity: 1 })
+        });
+
+        if (response.ok) {
+            window.location.href = "/travel/veloxTravel/travelCart";
+        } else {
+            const data = await response.json().catch(() => ({}));
+            alert(data.message || "Failed to add package to cart. Please try again.");
+        }
+    } catch (err) {
+        console.error("Cart error:", err);
+        alert("A network error occurred while adding to cart.");
+    }
+}
+
+async function toggleWishlist(itemId, btnElement) {
+    if (!currentUser) {
+        alert("Please login to save mountain packages.");
+        window.location.href = "/auth/login";
+        return;
+    }
+
+    const icon = btnElement.querySelector('i');
+    const isCurrentlyInWishlist = icon.classList.contains('fa-solid');
+
+    try {
+        const endpoint = isCurrentlyInWishlist ? '/wishlist/remove' : '/wishlist/add';
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productId: itemId })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            if (isCurrentlyInWishlist) {
+                icon.className = 'fa-regular fa-heart';
+            } else {
+                icon.className = 'fa-solid fa-heart active-heart';
+            }
+        } else {
+            alert(data.message || "Failed to update wishlist.");
+        }
+    } catch (err) {
+        console.error("Wishlist Toggle Error:", err);
+        alert("Server connection error. Please try again.");
+    }
+}
+</script>

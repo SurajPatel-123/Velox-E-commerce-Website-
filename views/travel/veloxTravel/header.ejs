@@ -1,0 +1,1402 @@
+<%- include('../../shopping/commonHeader/header') %>
+<%- include("../../shopping/commonHeader/navbar3") %>
+
+<!-- TRAVEL BODY START -->
+
+<div class="travel-page">
+
+    <!-- HERO -->
+    <section class="travel-hero">
+
+        <div class="travel-hero-content">
+
+            <span class="travel-badge">
+                <i class="fa-solid fa-earth-americas"></i>
+                Explore The World
+            </span>
+
+            <h1>
+                Your Journey,
+                <br>
+                <span>Your Story.</span>
+            </h1>
+
+            <p>
+                Discover amazing destinations, comfortable stays,
+                flights and unforgettable holiday experiences.
+            </p>
+
+            <div class="travel-buttons">
+
+                <a href="#travel-products" class="travel-primary-btn">
+                    Explore Trips
+                    <i class="fa-solid fa-arrow-right"></i>
+                </a>
+
+                <a href="#travel-categories" class="travel-secondary-btn">
+                    View Categories
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="travel-hero-visual">
+
+            <div class="travel-globe">
+                <i class="fa-solid fa-earth-asia"></i>
+            </div>
+
+            <div class="travel-float-card card-one">
+                <i class="fa-solid fa-plane"></i>
+                <div>
+                    <strong>Flights</strong>
+                    <small>Best fares</small>
+                </div>
+            </div>
+
+            <div class="travel-float-card card-two">
+                <i class="fa-solid fa-hotel"></i>
+                <div>
+                    <strong>Hotels</strong>
+                    <small>Best stays</small>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- QUICK SERVICES -->
+
+    <section class="travel-services">
+
+        <div class="travel-service">
+
+            <div class="service-icon">
+                <i class="fa-solid fa-plane"></i>
+            </div>
+
+            <div>
+                <h3>Easy Flights</h3>
+                <p>Book your flights easily</p>
+            </div>
+
+        </div>
+
+
+        <div class="travel-service">
+
+            <div class="service-icon">
+                <i class="fa-solid fa-hotel"></i>
+            </div>
+
+            <div>
+                <h3>Best Hotels</h3>
+                <p>Comfortable stays everywhere</p>
+            </div>
+
+        </div>
+
+
+        <div class="travel-service">
+
+            <div class="service-icon">
+                <i class="fa-solid fa-route"></i>
+            </div>
+
+            <div>
+                <h3>Holiday Packages</h3>
+                <p>Plan your perfect trip</p>
+            </div>
+
+        </div>
+
+
+        <div class="travel-service">
+
+            <div class="service-icon">
+                <i class="fa-solid fa-headset"></i>
+            </div>
+
+            <div>
+                <h3>Travel Support</h3>
+                <p>We're here to help</p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- PRODUCTS -->
+
+    <section class="travel-products" id="travel-products">
+
+        <div class="travel-section-header">
+
+            <div>
+                <h2>Popular Travel Experiences</h2>
+
+                <p>
+                    Explore destinations and travel deals picked for you
+                </p>
+            </div>
+
+            <a href="/travel" class="travel-view-all">
+                View All
+                <i class="fa-solid fa-arrow-right"></i>
+            </a>
+
+        </div>
+
+
+        <div class="travel-product-grid">
+
+            <% products.slice(0, 12).forEach(product => { %>
+
+                <div class="travel-product-card">
+
+                    <div class="travel-product-image">
+
+                        <img
+                            src="<%= product.image %>"
+                            alt="<%= product.title %>"
+                            loading="lazy"
+                        >
+
+                        <span class="travel-product-rating">
+                            <i class="fa-solid fa-star"></i>
+                            <%= product.rating %>
+                        </span>
+
+                    </div>
+
+
+                    <div class="travel-product-info">
+
+                        <span class="travel-product-category">
+                            <%= product.category %>
+                        </span>
+
+                        <h3>
+                            <%= product.title %>
+                        </h3>
+
+                        <p>
+                            <%= product.description %>
+                        </p>
+
+
+                        <div class="travel-product-bottom">
+
+                            <div>
+                                <small>Starting from</small>
+
+                                <strong>
+                                    ₹<%= product.price %>
+                                </strong>
+                            </div>
+
+                          <!-- पुराने button की जगह यह a (Link) टैग लगाएं -->
+<a href="/travel/product/<%= product._id %>" class="travel-view-btn">
+    View
+    <i class="fa-solid fa-arrow-right"></i>
+</a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            <% }) %>
+
+        </div>
+
+    </section>
+
+
+    <!-- CATEGORIES -->
+
+    <section class="travel-categories" id="travel-categories">
+
+        <div class="travel-section-header">
+
+            <div>
+                <h2>Explore By Category</h2>
+
+                <p>
+                    Choose your perfect way to travel
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="travel-category-grid">
+
+            <a href="/travel/category/Flights" class="travel-category-card">
+
+                <div class="travel-category-icon">
+                    <i class="fa-solid fa-plane"></i>
+                </div>
+
+                <h3>Flights</h3>
+
+                <span>Find your next flight</span>
+
+            </a>
+
+
+            <a href="/travel/category/Hotels" class="travel-category-card">
+
+                <div class="travel-category-icon">
+                    <i class="fa-solid fa-hotel"></i>
+                </div>
+
+                <h3>Hotels</h3>
+
+                <span>Stay comfortably</span>
+
+            </a>
+
+
+            <a href="/travel/category/Trains" class="travel-category-card">
+
+                <div class="travel-category-icon">
+                    <i class="fa-solid fa-train"></i>
+                </div>
+
+                <h3>Trains</h3>
+
+                <span>Travel by rail</span>
+
+            </a>
+
+
+            <a href="/travel/category/Buses" class="travel-category-card">
+
+                <div class="travel-category-icon">
+                    <i class="fa-solid fa-bus"></i>
+                </div>
+
+                <h3>Buses</h3>
+
+                <span>Affordable journeys</span>
+
+            </a>
+
+
+            <a href="/travel/category/Holiday%20Packages" class="travel-category-card">
+
+                <div class="travel-category-icon">
+                    <i class="fa-solid fa-umbrella-beach"></i>
+                </div>
+
+                <h3>Holiday Packages</h3>
+
+                <span>Complete experiences</span>
+
+            </a>
+
+
+            <a href="/travel/category/Beach%20Destinations" class="travel-category-card">
+
+                <div class="travel-category-icon">
+                    <i class="fa-solid fa-water"></i>
+                </div>
+
+                <h3>Beach Destinations</h3>
+
+                <span>Relax by the sea</span>
+
+            </a>
+
+
+            <a href="/travel/category/Mountain%20Destinations" class="travel-category-card">
+
+                <div class="travel-category-icon">
+                    <i class="fa-solid fa-mountain-sun"></i>
+                </div>
+
+                <h3>Mountain Trips</h3>
+
+                <span>Explore the hills</span>
+
+            </a>
+
+
+            <a href="/travel/category/International%20Trips" class="travel-category-card">
+
+                <div class="travel-category-icon">
+                    <i class="fa-solid fa-earth-americas"></i>
+                </div>
+
+                <h3>International</h3>
+
+                <span>Explore the world</span>
+
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- WHY VELOX TRAVEL -->
+
+    <section class="travel-benefits">
+
+        <div class="travel-benefit">
+
+            <div class="benefit-icon">
+                <i class="fa-solid fa-tag"></i>
+            </div>
+
+            <div>
+                <h3>Best Prices</h3>
+                <p>Great deals for every journey.</p>
+            </div>
+
+        </div>
+
+
+        <div class="travel-benefit">
+
+            <div class="benefit-icon">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+
+            <div>
+                <h3>Secure Booking</h3>
+                <p>Your booking experience is safe.</p>
+            </div>
+
+        </div>
+
+
+        <div class="travel-benefit">
+
+            <div class="benefit-icon">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+
+            <div>
+                <h3>24/7 Support</h3>
+                <p>We're always ready to help.</p>
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+<!-- TRAVEL BODY END -->
+        <style>
+                /* =====================================================
+   VELOX TRAVEL BODY
+===================================================== */
+/* button की जगह a टैग को स्टाइल करने के लिए */
+.travel-product-bottom .travel-view-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid #079bb5;
+    background: white;
+    color: #079bb5;
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-size: 10px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.travel-product-bottom .travel-view-btn:hover {
+    background: #079bb5;
+    color: white;
+}
+.travel-page {
+    width: 100%;
+    min-height: 100vh;
+    background: #f6fbfc;
+    padding: 18px 0 55px;
+}
+
+.travel-page * {
+    box-sizing: border-box;
+}
+
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.travel-hero {
+    width: calc(100% - 30px);
+    max-width: 1380px;
+
+    min-height: 350px;
+
+    margin: auto;
+
+    padding: 45px 65px;
+
+    border-radius: 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    overflow: hidden;
+    position: relative;
+
+    background:
+        linear-gradient(
+            115deg,
+            #e7faff 0%,
+            #d6f5fa 50%,
+            #c2edf4 100%
+        );
+}
+
+
+.travel-hero::before {
+    content: "";
+
+    position: absolute;
+
+    width: 360px;
+    height: 360px;
+
+    border-radius: 50%;
+
+    right: 100px;
+    top: -210px;
+
+    background: rgba(255,255,255,.35);
+}
+
+
+.travel-hero::after {
+    content: "";
+
+    position: absolute;
+
+    width: 250px;
+    height: 250px;
+
+    border-radius: 50%;
+
+    right: -70px;
+    bottom: -150px;
+
+    background: rgba(255,255,255,.3);
+}
+
+
+/* HERO CONTENT */
+
+.travel-hero-content {
+    width: 58%;
+
+    position: relative;
+    z-index: 2;
+}
+
+
+.travel-badge {
+    display: inline-flex;
+
+    align-items: center;
+    gap: 7px;
+
+    padding: 7px 14px;
+
+    border-radius: 30px;
+
+    background: #079bb5;
+    color: white;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    margin-bottom: 15px;
+}
+
+
+.travel-hero-content h1 {
+    margin: 0;
+
+    color: #123842;
+
+    font-size: 45px;
+    line-height: 1.1;
+}
+
+
+.travel-hero-content h1 span {
+    color: #079bb5;
+}
+
+
+.travel-hero-content p {
+    max-width: 570px;
+
+    margin: 16px 0 24px;
+
+    color: #5d7277;
+
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+
+.travel-buttons {
+    display: flex;
+
+    gap: 10px;
+}
+
+
+.travel-primary-btn,
+.travel-secondary-btn {
+    display: inline-flex;
+
+    align-items: center;
+    gap: 8px;
+
+    padding: 12px 20px;
+
+    border-radius: 7px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    transition: .25s;
+}
+
+
+.travel-primary-btn {
+    background: #079bb5;
+    color: white;
+}
+
+
+.travel-primary-btn:hover {
+    background: #067d91;
+    color: white;
+
+    transform: translateY(-2px);
+}
+
+
+.travel-secondary-btn {
+    background: white;
+    color: #07859c;
+
+    border: 1px solid #b8dfe6;
+}
+
+
+.travel-secondary-btn:hover {
+    background: #eefbfd;
+
+    color: #067d91;
+}
+
+
+/* =====================================================
+   HERO VISUAL
+===================================================== */
+
+.travel-hero-visual {
+    width: 38%;
+    height: 280px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    position: relative;
+    z-index: 2;
+}
+
+
+.travel-globe {
+    width: 225px;
+    height: 225px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255,255,255,.58);
+
+    box-shadow:
+        0 15px 35px rgba(0,120,140,.12);
+}
+
+
+.travel-globe i {
+    font-size: 105px;
+
+    color: #079bb5;
+}
+
+
+/* FLOAT CARDS */
+
+.travel-float-card {
+    position: absolute;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 10px 13px;
+
+    background: white;
+
+    border-radius: 9px;
+
+    box-shadow:
+        0 8px 22px rgba(0,0,0,.1);
+}
+
+
+.travel-float-card i {
+    width: 35px;
+    height: 35px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 7px;
+
+    background: #e5f8fb;
+
+    color: #079bb5;
+}
+
+
+.travel-float-card strong {
+    display: block;
+
+    font-size: 12px;
+    color: #222;
+}
+
+
+.travel-float-card small {
+    display: block;
+
+    margin-top: 2px;
+
+    font-size: 9px;
+    color: #888;
+}
+
+
+.card-one {
+    top: 35px;
+    right: 0;
+}
+
+
+.card-two {
+    bottom: 30px;
+    left: 5px;
+}
+
+
+/* =====================================================
+   SERVICES
+===================================================== */
+
+.travel-services {
+    width: calc(100% - 30px);
+    max-width: 1380px;
+
+    margin: 20px auto 0;
+
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 14px;
+}
+
+
+.travel-service {
+    background: white;
+
+    border: 1px solid #e1ecee;
+
+    border-radius: 11px;
+
+    padding: 16px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.service-icon {
+    width: 45px;
+    height: 45px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #e6f8fb;
+
+    color: #079bb5;
+}
+
+
+.travel-service h3 {
+    margin: 0 0 4px;
+
+    font-size: 13px;
+    color: #222;
+}
+
+
+.travel-service p {
+    margin: 0;
+
+    font-size: 10px;
+    color: #888;
+}
+
+
+/* =====================================================
+   PRODUCT SECTION
+===================================================== */
+
+.travel-products,
+.travel-categories {
+    width: calc(100% - 30px);
+    max-width: 1380px;
+
+    margin: 36px auto 0;
+}
+
+
+.travel-section-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 18px;
+}
+
+
+.travel-section-header h2 {
+    margin: 0 0 5px;
+
+    color: #202b2e;
+
+    font-size: 24px;
+}
+
+
+.travel-section-header p {
+    margin: 0;
+
+    color: #7a8588;
+
+    font-size: 13px;
+}
+
+
+.travel-view-all {
+    color: #079bb5;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* =====================================================
+   PRODUCT GRID - 4 PER ROW
+===================================================== */
+
+.travel-product-grid {
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 18px;
+}
+
+
+.travel-product-card {
+    overflow: hidden;
+
+    background: white;
+
+    border: 1px solid #e2eaec;
+
+    border-radius: 12px;
+
+    transition: .25s;
+}
+
+
+.travel-product-card:hover {
+    transform: translateY(-5px);
+
+    box-shadow:
+        0 10px 25px rgba(0,0,0,.08);
+}
+
+
+/* IMAGE */
+
+.travel-product-image {
+    height: 190px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    background: #f2f7f8;
+}
+
+
+.travel-product-image img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition: .3s;
+}
+
+
+.travel-product-card:hover
+.travel-product-image img {
+    transform: scale(1.05);
+}
+
+
+.travel-product-rating {
+    position: absolute;
+
+    top: 10px;
+    right: 10px;
+
+    padding: 5px 8px;
+
+    border-radius: 5px;
+
+    background: #079bb5;
+    color: white;
+
+    font-size: 10px;
+}
+
+
+/* PRODUCT INFO */
+
+.travel-product-info {
+    padding: 14px;
+}
+
+
+.travel-product-category {
+    color: #079bb5;
+
+    font-size: 10px;
+    font-weight: 700;
+
+    text-transform: uppercase;
+}
+
+
+.travel-product-info h3 {
+    margin: 6px 0;
+
+    color: #222;
+
+    font-size: 16px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+.travel-product-info p {
+    height: 32px;
+
+    margin: 0 0 13px;
+
+    overflow: hidden;
+
+    color: #777;
+
+    font-size: 11px;
+    line-height: 1.45;
+}
+
+
+.travel-product-bottom {
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+}
+
+
+.travel-product-bottom small {
+    display: block;
+
+    color: #999;
+
+    font-size: 9px;
+
+    margin-bottom: 2px;
+}
+
+
+.travel-product-bottom strong {
+    display: block;
+
+    color: #222;
+
+    font-size: 18px;
+}
+
+
+.travel-product-bottom button {
+    border: 1px solid #079bb5;
+
+    background: white;
+
+    color: #079bb5;
+
+    padding: 7px 10px;
+
+    border-radius: 6px;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+.travel-product-bottom button:hover {
+    background: #079bb5;
+    color: white;
+}
+
+
+/* =====================================================
+   CATEGORIES
+===================================================== */
+
+.travel-category-grid {
+    display: grid;
+
+    grid-template-columns: repeat(8, 1fr);
+
+    gap: 13px;
+}
+
+
+.travel-category-card {
+    min-height: 125px;
+
+    padding: 15px 8px;
+
+    background: white;
+
+    border: 1px solid #e1eaec;
+
+    border-radius: 11px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    transition: .25s;
+}
+
+
+.travel-category-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.07);
+
+    border-color: #b6dce3;
+}
+
+
+.travel-category-icon {
+    width: 52px;
+    height: 52px;
+
+    margin-bottom: 10px;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #e7f8fb;
+
+    color: #079bb5;
+
+    font-size: 21px;
+}
+
+
+.travel-category-card h3 {
+    margin: 0 0 4px;
+
+    color: #222;
+
+    font-size: 12px;
+}
+
+
+.travel-category-card span {
+    color: #999;
+
+    font-size: 9px;
+}
+
+
+/* =====================================================
+   BENEFITS
+===================================================== */
+
+.travel-benefits {
+    width: calc(100% - 30px);
+    max-width: 1380px;
+
+    margin: 35px auto 0;
+
+    display: grid;
+
+    grid-template-columns: repeat(3, 1fr);
+
+    gap: 15px;
+}
+
+
+.travel-benefit {
+    padding: 18px;
+
+    background: white;
+
+    border: 1px solid #e2eaec;
+
+    border-radius: 11px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 13px;
+}
+
+
+.benefit-icon {
+    width: 46px;
+    height: 46px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #e7f8fb;
+
+    color: #079bb5;
+}
+
+
+.travel-benefit h3 {
+    margin: 0 0 4px;
+
+    font-size: 13px;
+}
+
+
+.travel-benefit p {
+    margin: 0;
+
+    color: #888;
+
+    font-size: 10px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1200px) {
+
+    .travel-product-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .travel-category-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+}
+
+
+@media (max-width: 900px) {
+
+    .travel-hero {
+        padding: 35px;
+    }
+
+    .travel-hero-content {
+        width: 62%;
+    }
+
+    .travel-hero-content h1 {
+        font-size: 36px;
+    }
+
+    .travel-hero-visual {
+        width: 38%;
+    }
+
+    .travel-globe {
+        width: 175px;
+        height: 175px;
+    }
+
+    .travel-globe i {
+        font-size: 80px;
+    }
+
+    .travel-services {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .travel-hero {
+        width: calc(100% - 20px);
+
+        min-height: 300px;
+
+        padding: 30px 24px;
+    }
+
+    .travel-hero-content {
+        width: 100%;
+    }
+
+    .travel-hero-content h1 {
+        font-size: 30px;
+    }
+
+    .travel-hero-content p {
+        font-size: 13px;
+    }
+
+    .travel-hero-visual {
+        display: none;
+    }
+
+    .travel-buttons {
+        flex-wrap: wrap;
+    }
+
+    .travel-primary-btn,
+    .travel-secondary-btn {
+        padding: 10px 15px;
+    }
+
+    .travel-services {
+        width: calc(100% - 20px);
+
+        grid-template-columns: 1fr 1fr;
+
+        gap: 10px;
+    }
+
+    .travel-service {
+        padding: 12px;
+    }
+
+    .travel-products,
+    .travel-categories {
+        width: calc(100% - 20px);
+    }
+
+    .travel-section-header h2 {
+        font-size: 20px;
+    }
+
+    .travel-product-grid {
+        grid-template-columns: repeat(2, 1fr);
+
+        gap: 10px;
+    }
+
+    .travel-product-image {
+        height: 155px;
+    }
+
+    .travel-product-info {
+        padding: 10px;
+    }
+
+    .travel-product-info h3 {
+        font-size: 13px;
+    }
+
+    .travel-product-info p {
+        font-size: 10px;
+    }
+
+    .travel-category-grid {
+        grid-template-columns: repeat(2, 1fr);
+
+        gap: 10px;
+    }
+
+    .travel-benefits {
+        width: calc(100% - 20px);
+
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 400px) {
+
+    .travel-product-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .travel-services {
+        grid-template-columns: 1fr;
+    }
+
+}
+        </style>
+        <script>
+
+async function addToTravelCart(productId){
+
+    try{
+
+        const response = await fetch("/travel/veloxTravel/travelCart/add",{
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+                productId:productId
+            })
+
+        });
+
+        const data = await response.json();
+
+        if(data.success){
+
+            alert("Product added to Travel Cart");
+
+            updateTravelCartCount();
+
+        }else{
+
+            alert(data.message);
+
+        }
+
+    }catch(err){
+
+        console.log(err);
+
+        alert("Something went wrong");
+
+    }
+
+}
+
+async function updateTravelCartCount(){
+
+    try{
+
+        const response = await fetch("/travel/veloxTravel/travelCart/count");
+
+        const data = await response.json();
+
+        document.getElementById("cart-count").innerHTML =
+        "(" + data.count + ")";
+
+    }catch(err){
+
+        console.log(err);
+
+    }
+
+}
+
+updateTravelCartCount();
+
+</script>
+<%- include("../../shopping/commonHeader/footer") %>

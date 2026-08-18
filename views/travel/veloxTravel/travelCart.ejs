@@ -1,0 +1,633 @@
+<%- include("../../shopping/commonHeader/header") %>
+<%- include("../../shopping/commonHeader/navbar3") %>
+
+<div class="cart-page">
+
+    <div class="cart-title">
+        <div>
+            <h1>My Travel Cart</h1>
+            <p><%= totalItems %> item(s) in your cart</p>
+        </div>
+        <a href="/travel" class="continue-shopping">
+            <i class="fa-solid fa-arrow-left"></i>
+            Continue Shopping
+        </a>
+    </div>
+
+    <% if (cart.length === 0) { %>
+        <div class="empty-cart">
+            <i class="fa-solid fa-plane-slash"></i>
+            <h2>Your Travel Cart is Empty</h2>
+            <p>
+                Exciting travel deals and experiences are waiting for you.
+            </p>
+            <a href="/travel">Explore Destinations</a>
+        </div>
+    <% } else { %>
+
+    <div class="cart-layout">
+
+        <!-- LEFT SIDE: CART ITEMS -->
+        <div class="cart-left">
+            <% cart.forEach(item => { %>
+                <div class="cart-item" id="item-<%= item.product._id %>">
+
+                    <div class="cart-image">
+                        <img 
+                            src="<%= item.product.image %>" 
+                            alt="<%= item.product.title %>"
+                        >
+                    </div>
+
+                    <div class="cart-details">
+                        <h2><%= item.product.title %></h2>
+
+                        <p class="category">
+                            <%= item.product.category %>
+                        </p>
+
+                        <div class="rating">
+                            ⭐ <%= item.product.rating %>
+                        </div>
+
+                        <h3>
+                            ₹<%= item.product.price.toLocaleString("en-IN") %>
+                        </h3>
+
+                        <!-- QUANTITY -->
+                        <div class="quantity-box">
+                            <button 
+                                type="button" 
+                                onclick="updateQuantity('<%= item.product._id %>', 'decrease')">
+                                -
+                            </button>
+
+                            <span id="qty-<%= item.product._id %>">
+                                <%= item.quantity %>
+                            </span>
+
+                            <button 
+                                type="button" 
+                                onclick="updateQuantity('<%= item.product._id %>', 'increase')">
+                                +
+                            </button>
+                        </div>
+
+                        <!-- BUTTONS -->
+                        <div class="cart-buttons">
+                            <button 
+                                type="button" 
+                                class="remove-btn" 
+                                onclick="removeFromCart('<%= item.product._id %>')">
+                                <i class="fa-solid fa-trash"></i>
+                                Remove
+                            </button>
+
+                            <button type="button" class="save-btn">
+                                <i class="fa-regular fa-heart"></i>
+                                Save For Later
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="item-total">
+                        ₹<%= (item.product.price * item.quantity).toLocaleString("en-IN") %>
+                    </div>
+
+                </div>
+            <% }) %>
+        </div>
+
+        <!-- RIGHT SIDE: SUMMARY -->
+        <div class="cart-right">
+            <div class="summary-card">
+                <h2>Price Details</h2>
+                <hr>
+
+                <div class="summary-row">
+                    <span>Price (<%= totalItems %> Items)</span>
+                    <span>
+                        ₹<%= subtotal.toLocaleString("en-IN") %>
+                    </span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Booking & Delivery Charges</span>
+                    <span>
+                        <% if (deliveryFee === 0) { %>
+                            <span style="color:#008000;font-weight:600;">FREE</span>
+                        <% } else { %>
+                            ₹<%= deliveryFee %>
+                        <% } %>
+                    </span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Platform Fee</span>
+                    <span>₹0</span>
+                </div>
+
+                <hr>
+
+                <div class="summary-total">
+                    <span>Total Amount</span>
+                    <span>
+                        ₹<%= total.toLocaleString("en-IN") %>
+                    </span>
+                </div>
+
+                <button 
+                    type="button" 
+                    class="checkout-btn" 
+                    onclick="checkoutCart()">
+                    Proceed to Checkout
+                </button>
+
+                <button 
+                    type="button" 
+                    class="clear-cart-btn" 
+                    onclick="clearCart()">
+                    Clear Cart
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <% } %>
+
+</div>
+
+<script>
+function checkoutCart() {
+    window.location.href = "/travel/checkout";
+}
+
+async function updateQuantity(productId, action) {
+    try {
+        const response = await fetch("/travel/veloxTravel/travelCart/update", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ productId, action })
+        });
+
+        if (response.ok) {
+            location.reload();
+        } else {
+            const errorData = await response.json().catch(() => ({}));
+            alert(errorData.message || "Failed to update quantity. Please try again.");
+        }
+    } catch (err) {
+        console.error("Error updating quantity:", err);
+        alert("A network error occurred. Please try again.");
+    }
+}
+
+async function removeFromCart(productId) {
+    try {
+        const response = await fetch("/travel/veloxTravel/travelCart/remove", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ productId })
+        });
+
+        if (response.ok) {
+            location.reload();
+        } else {
+            const errorData = await response.json().catch(() => ({}));
+            alert(errorData.message || "Failed to remove item. Please try again.");
+        }
+    } catch (err) {
+        console.error("Error removing item:", err);
+        alert("A network error occurred. Please try again.");
+    }
+}
+
+async function clearCart() {
+    if (!confirm("Are you sure you want to clear your entire travel cart?")) return;
+
+    try {
+        const response = await fetch("/travel/veloxTravel/travelCart/clear", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        if (response.ok) {
+            location.reload();
+        } else {
+            const errorData = await response.json().catch(() => ({}));
+            alert(errorData.message || "Failed to clear cart. Please try again.");
+        }
+    } catch (err) {
+        console.error("Error clearing cart:", err);
+        alert("A network error occurred. Please try again.");
+    }
+}
+</script>
+
+<style>
+/* ===========================
+   TRAVEL CART STYLES
+=========================== */
+
+body {
+    background: #f1f3f6;
+}
+
+.cart-page {
+    width: 95%;
+    max-width: 1450px;
+    margin: 25px auto;
+}
+
+.cart-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.cart-title h1 {
+    font-size: 32px;
+    color: #212121;
+    margin-bottom: 5px;
+}
+
+.cart-title p {
+    color: #666;
+    font-size: 15px;
+}
+
+.continue-shopping {
+    background: #079bb5;
+    color: #fff;
+    padding: 11px 22px;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: .3s;
+    font-weight: 600;
+}
+
+.continue-shopping:hover {
+    background: #057e93;
+}
+
+.cart-layout {
+    display: grid;
+    grid-template-columns: 2fr 360px;
+    gap: 25px;
+}
+
+.cart-left {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.cart-item {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,.08);
+    transition: .3s;
+}
+
+.cart-item:hover {
+    transform: translateY(-3px);
+}
+
+.cart-image {
+    width: 170px;
+    height: 170px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fafafa;
+    border-radius: 8px;
+}
+
+.cart-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.cart-details {
+    flex: 1;
+}
+
+.cart-details h2 {
+    font-size: 22px;
+    color: #222;
+    margin-bottom: 8px;
+}
+
+.category {
+    color: #079bb5;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.rating {
+    display: inline-block;
+    background: #079bb5;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.cart-details h3 {
+    font-size: 28px;
+    color: #111;
+    margin-bottom: 18px;
+}
+
+.quantity-box {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.quantity-box button {
+    width: 38px;
+    height: 38px;
+    border: none;
+    background: #079bb5;
+    color: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    transition: .3s;
+}
+
+.quantity-box button:hover {
+    background: #057e93;
+}
+
+.quantity-box span {
+    font-size: 20px;
+    font-weight: bold;
+    width: 30px;
+    text-align: center;
+}
+
+.cart-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.remove-btn,
+.save-btn {
+    border: none;
+    cursor: pointer;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: .3s;
+}
+
+.remove-btn {
+    background: #dc3545;
+    color: #fff;
+}
+
+.remove-btn:hover {
+    background: #bb2d3b;
+}
+
+.save-btn {
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+    color: #333;
+}
+
+.save-btn:hover {
+    background: #ececec;
+}
+
+.item-total {
+    font-size: 28px;
+    font-weight: bold;
+    color: #079bb5;
+    min-width: 150px;
+    text-align: right;
+}
+
+/* ===========================
+   RIGHT SIDE SUMMARY
+=========================== */
+
+.cart-right {
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+}
+
+.summary-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 22px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.08);
+}
+
+.summary-card h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #222;
+}
+
+.summary-card hr {
+    border: none;
+    border-top: 1px solid #e5e5e5;
+    margin: 15px 0;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px 0;
+    font-size: 16px;
+    color: #444;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: #111;
+    margin: 20px 0;
+}
+
+.checkout-btn {
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 6px;
+    background: #079bb5;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.checkout-btn:hover {
+    background: #057e93;
+}
+
+.clear-cart-btn {
+    width: 100%;
+    height: 45px;
+    border: 1px solid #dc3545;
+    border-radius: 6px;
+    background: transparent;
+    color: #dc3545;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: .3s;
+}
+
+.clear-cart-btn:hover {
+    background: #dc3545;
+    color: #fff;
+}
+
+/* ===========================
+   EMPTY CART
+=========================== */
+
+.empty-cart {
+    width: 100%;
+    background: #fff;
+    border-radius: 10px;
+    padding: 70px 20px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,.08);
+}
+
+.empty-cart i {
+    font-size: 90px;
+    color: #079bb5;
+    margin-bottom: 25px;
+}
+
+.empty-cart h2 {
+    font-size: 34px;
+    margin-bottom: 10px;
+    color: #222;
+}
+
+.empty-cart p {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 25px;
+}
+
+.empty-cart a {
+    display: inline-block;
+    background: #079bb5;
+    color: #fff;
+    text-decoration: none;
+    padding: 13px 30px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.empty-cart a:hover {
+    background: #057e93;
+}
+
+/* ===========================
+   RESPONSIVE DESIGN
+=========================== */
+
+@media(max-width:1100px) {
+    .cart-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .cart-right {
+        position: static;
+    }
+}
+
+@media(max-width:768px) {
+    .cart-title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cart-image {
+        width: 100%;
+        height: 250px;
+    }
+
+    .item-total {
+        text-align: left;
+        margin-top: 15px;
+        font-size: 24px;
+    }
+
+    .cart-buttons {
+        flex-wrap: wrap;
+    }
+
+    .remove-btn,
+    .save-btn {
+        width: 100%;
+    }
+}
+
+@media(max-width:500px) {
+    .cart-page {
+        width: 96%;
+    }
+
+    .cart-title h1 {
+        font-size: 26px;
+    }
+
+    .summary-card h2 {
+        font-size: 20px;
+    }
+
+    .cart-details h2 {
+        font-size: 18px;
+    }
+
+    .cart-details h3 {
+        font-size: 22px;
+    }
+
+    .quantity-box button {
+        width: 34px;
+        height: 34px;
+    }
+}
+</style>
+
+<%- include("../../shopping/commonHeader/footer") %>s

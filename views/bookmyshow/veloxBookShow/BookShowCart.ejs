@@ -1,0 +1,557 @@
+<%- include("../../shopping/commonHeader/header") %>
+<%- include("../../shopping/commonHeader/navbar4") %>
+
+<div class="cart-page">
+
+    <div class="cart-title">
+        <div>
+            <h1>My BookMyShow Cart</h1>
+            <p><span id="header-total-items"><%= totalItems || 0 %></span> item(s) in your cart</p>
+        </div>
+
+        <a href="/bookmyshow" class="continue-shopping">
+            <i class="fa-solid fa-arrow-left"></i> Continue Shopping
+        </a>
+    </div>
+
+    <% if (!cart || cart.length === 0) { %>
+
+        <div class="empty-cart" id="empty-cart-box">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <h2>Your BookMyShow Cart is Empty</h2>
+            <p>Exciting BookMyShow deals and experiences are waiting for you.</p>
+            <a href="/bookmyshow">Book Now</a>
+        </div>
+
+    <% } else { %>
+
+    <div class="cart-layout" id="cart-layout-container">
+
+        <!-- LEFT SIDE: ITEM LIST -->
+        <div class="cart-left">
+
+            <% cart.forEach(item => { %>
+                <% if (item && item.product) { %>
+                <div class="cart-item" id="item-<%= item.product._id %>">
+
+                    <div class="cart-image">
+                        <img src="<%= item.product.image || '/images/default-show.jpg' %>" alt="<%= item.product.title %>">
+                    </div>
+
+                    <div class="cart-details">
+                        <h2><%= item.product.title %></h2>
+                        <p class="category"><%= item.product.category || 'Event / Show' %></p>
+
+                        <div class="rating">
+                            ⭐ <%= item.product.rating || '4.5' %>
+                        </div>
+
+                        <h3>₹<span class="unit-price" id="unit-price-<%= item.product._id %>"><%= (item.product.price || 0).toLocaleString("en-IN") %></span></h3>
+
+                        <!-- QUANTITY CONTROLS -->
+                        <div class="quantity-box">
+                            <button type="button" onclick="updateQuantity('<%= item.product._id %>', 'decrease')">-</button>
+                            <span id="qty-<%= item.product._id %>"><%= item.quantity %></span>
+                            <button type="button" onclick="updateQuantity('<%= item.product._id %>', 'increase')">+</button>
+                        </div>
+
+                        <!-- BUTTONS -->
+                        <div class="cart-buttons">
+                            <button type="button" class="remove-btn" onclick="removeFromCart('<%= item.product._id %>')">
+                                <i class="fa-solid fa-trash"></i> Remove
+                            </button>
+
+                            <button type="button" class="save-btn" onclick="saveForLater('<%= item.product._id %>')">
+                                <i class="fa-regular fa-heart"></i> Save For Later
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <div class="item-total">
+                        ₹<span id="item-total-<%= item.product._id %>"><%= ((item.product.price || 0) * item.quantity).toLocaleString("en-IN") %></span>
+                    </div>
+
+                </div>
+                <% } %>
+            <% }) %>
+
+        </div>
+
+        <!-- RIGHT SIDE: SUMMARY CARD -->
+        <div class="cart-right">
+
+            <div class="summary-card">
+
+                <h2>Price Details</h2>
+                <hr>
+
+                <div class="summary-row">
+                    <span>Price (<span id="summary-total-items"><%= totalItems || 0 %></span> Items)</span>
+                    <span>₹<span id="summary-subtotal"><%= (subtotal || 0).toLocaleString("en-IN") %></span></span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Delivery / Handling Fee</span>
+                    <span id="summary-delivery-container">
+                        <% if (!deliveryFee || deliveryFee === 0) { %>
+                            <span class="free-text">FREE</span>
+                        <% } else { %>
+                            ₹<span id="summary-delivery"><%= deliveryFee %></span>
+                        <% } %>
+                    </span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Platform Fee</span>
+                    <span>₹0</span>
+                </div>
+
+                <hr>
+
+                <div class="summary-total">
+                    <span>Total Amount</span>
+                    <span>₹<span id="summary-grand-total"><%= (total || 0).toLocaleString("en-IN") %></span></span>
+                </div>
+
+                <button type="button" class="checkout-btn" onclick="checkoutCart()">
+                    Proceed to Checkout
+                </button>
+
+                <button type="button" class="clear-cart-btn" onclick="clearCart()">
+                    Clear Cart
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <% } %>
+
+</div>
+
+<script>
+function checkoutCart() {
+    // Ye direct aapke express route "/bookmyshow/checkout" par bhejega:
+    window.location.href = "/bookmyshow/checkout";
+}
+
+async function updateQuantity(productId, action) {
+    try {
+        const response = await fetch("/bookmyshow/veloxBookShow/BookShowCart/update", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ productId: productId, action: action })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            location.reload(); 
+        } else {
+            alert(data.message || `Failed to ${action} quantity.`);
+        }
+    } catch (err) {
+        console.error("Error updating quantity:", err);
+        alert("Something went wrong while updating quantity.");
+    }
+}
+
+async function removeFromCart(productId) {
+    if (!confirm("Are you sure you want to remove this item?")) return;
+
+    try {
+        const response = await fetch("/bookmyshow/veloxBookShow/BookShowCart/remove", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ productId: productId })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            location.reload();
+        } else {
+            alert(data.message || "Failed to remove item.");
+        }
+    } catch (err) {
+        console.error("Error removing item:", err);
+        alert("Something went wrong.");
+    }
+}
+
+async function clearCart() {
+    if (!confirm("Clear entire cart?")) return;
+
+    try {
+        const response = await fetch("/bookmyshow/veloxBookShow/BookShowCart/clear", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            location.reload();
+        } else {
+            alert(data.message || "Failed to clear cart.");
+        }
+    } catch (err) {
+        console.error("Error clearing cart:", err);
+        alert("Something went wrong.");
+    }
+}
+
+function saveForLater(productId) {
+    alert("Item saved to wishlist!");
+}
+</script>
+
+<style>
+
+
+.cart-page {
+    width: 95%;
+    max-width: 1450px;
+    margin: 25px auto;
+}
+
+.cart-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.cart-title h1 {
+    font-size: 32px;
+    color: #212121;
+    margin-bottom: 5px;
+}
+
+.cart-title p {
+    color: #666;
+    font-size: 15px;
+}
+
+.continue-shopping {
+    background: #e6234e;
+    color: #fff;
+    padding: 11px 22px;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+    font-weight: 600;
+}
+
+.continue-shopping:hover {
+    background: #9e0627;
+}
+
+.cart-layout {
+    display: grid;
+    grid-template-columns: 2fr 360px;
+    gap: 25px;
+}
+
+.cart-left {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.cart-item {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,.08);
+    transition: transform 0.2s ease;
+}
+
+.cart-item:hover {
+    transform: translateY(-2px);
+}
+
+.cart-image {
+    width: 170px;
+    height: 170px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fafafa;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.cart-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cart-details {
+    flex: 1;
+}
+
+.cart-details h2 {
+    font-size: 22px;
+    color: #222;
+    margin-bottom: 8px;
+}
+
+.category {
+    color: #e6234e;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.rating {
+    display: inline-block;
+    background: #e6234e;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.cart-details h3 {
+    font-size: 28px;
+    color: #111;
+    margin-bottom: 18px;
+}
+
+.quantity-box {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.quantity-box button {
+    width: 38px;
+    height: 38px;
+    border: none;
+    background: #e6234e;
+    color: #fff;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.quantity-box button:hover {
+    background: #9e0526;
+}
+
+.quantity-box span {
+    font-size: 20px;
+    font-weight: bold;
+    width: 30px;
+    text-align: center;
+}
+
+.cart-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.remove-btn,
+.save-btn {
+    border: none;
+    cursor: pointer;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.remove-btn {
+    background: #e6234e;
+    color: #fff;
+}
+
+.save-btn {
+    background: #f8f9fa;
+    border: 1px solid #ddd;
+}
+
+.save-btn:hover {
+    background: #ececec;
+}
+
+.item-total {
+    font-size: 28px;
+    font-weight: bold;
+    color: #e6234e;
+    min-width: 150px;
+    text-align: right;
+}
+
+.cart-right {
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+}
+
+.summary-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 22px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.08);
+}
+
+.summary-card h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #222;
+}
+
+.summary-card hr {
+    border: none;
+    border-top: 1px solid #e5e5e5;
+    margin: 15px 0;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 15px 0;
+    font-size: 16px;
+    color: #444;
+}
+
+.free-text {
+    color: #008000;
+    font-weight: 600;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 22px;
+    font-weight: bold;
+    color: #111;
+    margin: 20px 0;
+}
+
+.checkout-btn {
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 6px;
+    background: #e6234e;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.checkout-btn:hover {
+    background: #9e0627;
+}
+
+.clear-cart-btn {
+    width: 100%;
+    height: 45px;
+    border: none;
+    border-radius: 6px;
+    background: #dc3545;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: background-color 0.3s ease;
+}
+
+.clear-cart-btn:hover {
+    background: #bb2d3b;
+}
+
+.empty-cart {
+    width: 100%;
+    background: #fff;
+    border-radius: 10px;
+    padding: 70px 20px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,.08);
+}
+
+.empty-cart i {
+    font-size: 90px;
+    color: #e6234e;
+    margin-bottom: 25px;
+}
+
+.empty-cart h2 {
+    font-size: 34px;
+    margin-bottom: 10px;
+    color: #222;
+}
+
+.empty-cart p {
+    color: #666;
+    font-size: 16px;
+    margin-bottom: 25px;
+}
+
+.empty-cart a {
+    display: inline-block;
+    background: #e6234e;
+    color: #fff;
+    text-decoration: none;
+    padding: 13px 30px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.empty-cart a:hover {
+    background: #9e0627;
+}
+
+@media(max-width: 1100px) {
+    .cart-layout {
+        grid-template-columns: 1fr;
+    }
+    .cart-right {
+        position: static;
+    }
+}
+
+@media(max-width: 768px) {
+    .cart-title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+    .cart-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .cart-image {
+        width: 100%;
+        height: 250px;
+    }
+    .item-total {
+        text-align: left;
+        margin-top: 15px;
+        font-size: 24px;
+    }
+    .cart-buttons {
+        flex-wrap: wrap;
+    }
+    .remove-btn, .save-btn {
+        width: 100%;
+    }
+}
+</style>
+
+<%- include("../../shopping/commonHeader/footer") %>

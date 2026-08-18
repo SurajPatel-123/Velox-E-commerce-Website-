@@ -1,0 +1,440 @@
+<%- include("../../shopping/commonHeader/header") %>
+<%- include("../../shopping/commonHeader/navbar4") %>
+<hr>
+
+<% 
+  // Defensive check: Falls back to 'events', 'activities', 'products', or an empty array
+  const eventItems = (typeof events !== 'undefined' && Array.isArray(events)) ? events : 
+                     (typeof activities !== 'undefined' && Array.isArray(activities)) ? activities : 
+                     (typeof products !== 'undefined' && Array.isArray(products)) ? products : []; 
+%>
+
+<div class="event-page">
+
+    <!-- HERO HEADER SECTION -->
+    <div class="event-header">
+        <h2>🎟️ Live Events & Workshops</h2>
+        <p>Explore top-rated festivals, tech summits, creative workshops, and local cultural events around you!</p>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="event-container">
+
+        <% if (eventItems.length === 0) { %>
+            <div style="grid-column: 1 / -1; text-align: center; padding: 50px 20px;">
+                <h3 style="color: #64748b;">No upcoming events found right now.</h3>
+                <p style="color: #94a3b8;">Please check back later or explore other entertainment categories!</p>
+            </div>
+        <% } else { %>
+            <% eventItems.forEach(event => { %>
+                <div class="event-card">
+                    <a href="/bookmyshow/product/<%= event._id %>" class="event-link">
+
+                        <!-- IMAGE CONTAINER WITH WISHLIST BUTTON -->
+                        <div class="event-img-wrapper">
+                            <button 
+                                type="button" 
+                                class="wishlist-icon-btn" 
+                                onclick="event.preventDefault(); event.stopPropagation(); toggleWishlist('<%= event._id %>', this)"
+                                aria-label="Save to Wishlist"
+                            >
+                                <% if (typeof user !== 'undefined' && user && user.wishlist && user.wishlist.includes(event._id)) { %>
+                                    <i class="fa-solid fa-heart active-heart"></i>
+                                <% } else { %>
+                                    <i class="fa-regular fa-heart"></i>
+                                <% } %>
+                            </button>
+
+                            <img src="<%= event.image || event.img || '/images/default.jpg' %>" alt="<%= event.title %>" loading="lazy">
+                            <span class="badge-category"><%= event.category || event.eventType || 'Live Event' %></span>
+                        </div>
+
+                        <!-- CARD DETAILS -->
+                        <div class="event-details">
+                            <div class="event-location">
+                                <i class="fa-solid fa-location-dot"></i> <%= event.location || event.venue || 'Event Venue' %>
+                            </div>
+
+                            <h3><%= event.title %></h3>
+
+                            <p class="description"><%= event.description %></p>
+
+                            <div class="meta-info">
+                                <div class="rating">
+                                    ⭐ <%= event.rating || '4.8' %> <span class="reviews">(<%= event.reviewsCount || '80+' %> reviews)</span>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <div class="price-wrapper">
+                                    <span class="price-label">Entry starting from</span>
+                                    <div class="price">₹<%= event.price ? event.price.toLocaleString("en-IN") : '0' %></div>
+                                </div>
+
+                                <button type="button"
+                                    class="book-now-btn"
+                                    onclick="event.preventDefault(); event.stopPropagation(); bookNow('<%= event._id %>')">  
+                                    <i class="fa-solid fa-calendar-check"></i> Book Pass
+                                </button>
+                            </div>
+                        </div>
+
+                    </a>
+                </div>
+            <% }) %>
+        <% } %>
+
+    </div>
+
+</div>
+
+<%- include("../../shopping/commonHeader/footer") %>
+
+<style>
+/* =========================
+   GLOBAL RESET
+========================= */
+
+.event-page,
+.event-page * {
+    box-sizing: border-box;
+}
+
+/* =========================
+   PAGE CONTAINER
+========================= */
+
+.event-page {
+    width: 100%;
+    max-width: 100vw;
+    background: #f4f7f4; /* Soft Rose/Coral Accent Background */
+    padding: 25px 30px;
+    overflow-x: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* =========================
+   PAGE HEADER
+========================= */
+
+.event-header {
+    margin: 0 0 30px 5px;
+}
+
+.event-header h2 {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 700;
+    color: #881337;
+}
+
+.event-header p {
+    margin: 8px 0 0;
+    font-size: 15px;
+    color: #e11d48;
+}
+
+/* =========================
+   GRID CONTAINER
+========================= */
+
+.event-container {
+    width: 100%;
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+}
+
+/* =========================
+   EVENT CARD
+========================= */
+
+.event-card {
+    width: 100% !important;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background: #ffffff;
+    border: 1px solid #fecdd3;
+}
+
+.event-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(225, 29, 72, 0.16);
+}
+
+.event-link {
+    width: 100%;
+    height: 100%;
+    display: flex !important;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+}
+
+/* =========================
+   IMAGE & BADGE
+========================= */
+
+.event-img-wrapper {
+    width: 100%;
+    height: 220px !important;
+    position: relative;
+    overflow: hidden;
+    background: #e2e8f0;
+}
+
+.event-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.event-card:hover .event-img-wrapper img {
+    transform: scale(1.08);
+}
+
+.badge-category {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(136, 19, 55, 0.88);
+    backdrop-filter: blur(4px);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+/* =========================
+   WISHLIST BUTTON
+========================= */
+
+.wishlist-icon-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(4px);
+    border: none;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    color: #64748b;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+    z-index: 10;
+    outline: none;
+}
+
+.wishlist-icon-btn:hover {
+    background: #ffffff;
+    color: #ef4444;
+}
+
+.wishlist-icon-btn .active-heart {
+    color: #ef4444 !important;
+    animation: pop 0.3s ease;
+}
+
+@keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.3); }
+    100% { transform: scale(1); }
+}
+
+/* =========================
+   DETAILS
+========================= */
+
+.event-details {
+    width: 100%;
+    padding: 18px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.event-location {
+    font-size: 12px;
+    font-weight: 600;
+    color: #e11d48;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.event-page .event-details h3 {
+    margin: 0;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: #0f172a;
+    min-height: 44px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.event-page .event-details .description {
+    margin: 8px 0 14px 0;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #64748b;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 36px;
+}
+
+.meta-info {
+    margin-bottom: 14px;
+}
+
+.rating {
+    font-size: 13px;
+    font-weight: 600;
+    color: #d97706;
+}
+
+.reviews {
+    color: #94a3b8;
+    font-weight: 400;
+    font-size: 12px;
+}
+
+/* =========================
+   FOOTER & BUTTON
+========================= */
+
+.card-footer {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-top: 12px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.price-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.price-label {
+    font-size: 11px;
+    color: #94a3b8;
+}
+
+.price {
+    font-size: 18px;
+    font-weight: 800;
+    color: #e11d48;
+}
+
+.book-now-btn {
+    cursor: pointer;
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 0 14px;
+    height: 38px;
+    gap: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e11d48;
+    color: white;
+    transition: background-color 0.2s ease;
+}
+
+.book-now-btn:hover {
+    background-color: #be123c;
+}
+
+/* =========================
+   RESPONSIVE BREAKPOINTS
+========================= */
+
+@media (max-width: 1200px) {
+    .event-page .event-container {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+}
+
+@media (max-width: 850px) {
+    .event-page {
+        padding: 15px;
+    }
+
+    .event-page .event-container {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .event-page .event-container {
+        grid-template-columns: 1fr !important;
+    }
+
+    .event-img-wrapper {
+        height: 200px !important;
+    }
+}
+</style>
+
+<script>
+const currentUser = JSON.parse('<%- JSON.stringify(user || null) %>');
+
+function bookNow(eventId) {
+    window.location.href = `/bookmyshow/product/${eventId}`;
+}
+
+async function toggleWishlist(eventId, btnElement) {
+    if (!currentUser) {
+        alert("Please login to save events to your wishlist.");
+        window.location.href = "/auth/login";
+        return;
+    }
+
+    const icon = btnElement.querySelector('i');
+    const isCurrentlyInWishlist = icon.classList.contains('fa-solid');
+
+    try {
+        const endpoint = isCurrentlyInWishlist ? '/wishlist/entertainment/remove' : '/wishlist/entertainment/add';
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ productId: eventId })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            if (isCurrentlyInWishlist) {
+                icon.className = 'fa-regular fa-heart';
+            } else {
+                icon.className = 'fa-solid fa-heart active-heart';
+            }
+        } else {
+            alert(data.message || "Failed to update wishlist.");
+        }
+    } catch (err) {
+        console.error("Wishlist Toggle Error:", err);
+        alert("Server connection error. Please try again.");
+    }
+}
+</script>
