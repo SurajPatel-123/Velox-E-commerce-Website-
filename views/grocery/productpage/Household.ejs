@@ -1,88 +1,254 @@
 <%- include("../../shopping/commonHeader/header") %>
 <%- include("../../shopping/commonHeader/navbar2") %>
-<hr>
+
 
 <div class="electronics-page">
 
     <div class="products-header">
-        <h2>Household</h2>
-        <p>Explore the latest Household products</p>
+        <div>
+            <h2>HouseHold</h2>
+            <p>Explore the latest Household products</p>
+        </div>
+        <!-- Trigger Button to Open Modal -->
+        <button type="button" class="open-filter-btn" onclick="openFilterModal()">
+            <i class="fa-solid fa-sliders"></i> Filters
+        </button>
     </div>
 
-    <div class="products-container">
+    <!-- Filter Popup Modal Overlay -->
+    <div id="filterModal" class="filter-modal-overlay">
+        <div class="filter-modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-filter"></i> Filter Products</h3>
+                <span class="close-btn" onclick="closeFilterModal()">&times;</span>
+            </div>
 
+            <div class="modal-body">
+                <!-- Price Filters -->
+                <div class="filter-group">
+                    <h4>Price Range</h4>
+                    <div class="price-inputs">
+                        <input type="number" id="minPriceInput" placeholder="Min (₹)">
+                        <span>to</span>
+                        <input type="number" id="maxPriceInput" placeholder="Max (₹)">
+                    </div>
+                </div>
+
+                <!-- Star Rating Filters -->
+                <div class="filter-group">
+                    <h4>Minimum Rating</h4>
+                    <div class="rating-buttons">
+                        <button type="button" class="rating-btn active" data-rating="0" onclick="setRatingFilter(0, this)">All Ratings</button>
+                        <button type="button" class="rating-btn" data-rating="4" onclick="setRatingFilter(4, this)">4★ & above</button>
+                        <button type="button" class="rating-btn" data-rating="3" onclick="setRatingFilter(3, this)">3★ & above</button>
+                        <button type="button" class="rating-btn" data-rating="2" onclick="setRatingFilter(2, this)">2★ & above</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="reset-btn" onclick="resetFilters()">Reset All</button>
+                <button type="button" class="apply-btn" onclick="applyFilters()">Apply Filters</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Products Grid -->
+    <div class="products-container" id="productsContainer">
         <% products.forEach(product => { %>
-
-            <div class="product-card">
-
-                <a
-                    href="/grocery/product/<%= product._id %>"
-                    class="product-link"
-                >
-
+            <div class="product-card" data-id="<%= product._id %>">
+                <a href="/grocery/product/<%= product._id %>" class="product-link">
                     <div class="product-img">
-                        <!-- 🔴 WISHLIST BUTTON (POSITIONED ON IMAGE) -->
-                        <button 
-                            type="button" 
-                            class="wishlist-icon-btn" 
-                            onclick="event.preventDefault(); event.stopPropagation(); addToWishlist('<%= product._id %>', this)"
-                        >
+                        <img src="<%= product.image %>" alt="<%= product.title %>">
+                    </div>
+                    <div class="product-details">
+                        <h3><%= product.title %></h3>
+                        <p class="description"><%= product.description %></p>
+                        <div class="rating">⭐ <%= product.rating %></div>
+                        <div class="price">₹<%= product.price.toLocaleString("en-IN") %></div>
+                        <p class="category"><%= product.category %></p>
+                        <br>
+                        <button type="button" class="buy-now-btn" onclick="event.stopPropagation(); buyNow('<%= product._id %>')" style="cursor: pointer; outline: none; border: none; border-radius: 10px; font-size: 16px; height: 35px; gap: 5px; width: 110px; display: flex; align-items: center; justify-content: center; background-color: #03045e; color: white;">
+                            <i class="fa-solid fa-cart-shopping"></i>Buy Now
+                        </button>
+                        <button type="button" class="wishlist-icon-btn" onclick="addToWishlist('<%= product._id %>', this)">
                             <% if (user && user.wishlist && user.wishlist.includes(product._id)) { %>
                                 <i class="fa-solid fa-heart" style="color: #e63946;"></i>
                             <% } else { %>
                                 <i class="fa-regular fa-heart"></i>
                             <% } %>
-                        </button>
-
-                        <img
-                            src="<%= product.image %>"
-                            alt="<%= product.title %>"
-                        >
+                        </button>                   
                     </div>
-
-                    <div class="product-details">
-
-                        <h3>
-                            <%= product.title %>
-                        </h3>
-
-                        <p class="description">
-                            <%= product.description %>
-                        </p>
-
-                        <div class="rating">
-                            ⭐ <%= product.rating %>
-                        </div>
-
-                        <div class="price">
-                            ₹<%= product.price.toLocaleString("en-IN") %>
-                        </div>
-
-                        <p class="category">
-                            <%= product.category %>
-                        </p>
-                        <br>
-                        <button type="button"
-                            class="buy-now-btn"
-                            onclick="event.preventDefault(); event.stopPropagation(); buyNow('<%= product._id %>')"  
-                            style="cursor: pointer; outline: none; border: none; border-radius: 10px; font-size: 16px; height: 35px; gap: 5px; width: 110px; display: flex; align-items: center; justify-content: center; background-color: #198754; color: white;">  
-                            <i class="fa-solid fa-cart-shopping"></i>Buy Now
-                        </button>
-                    </div>
-
                 </a>
-
             </div>
-
         <% }) %>
-
     </div>
-
 </div>
-
 <%- include("../../shopping/commonHeader/footer") %>
 
 <style>
+    /* Header Layout Fix for Filter Button */
+.products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+    .open-filter-btn {
+    background: #198754;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s ease;
+}
+
+.open-filter-btn:hover {
+    background: #0ee681;
+}
+
+/* Modal Background Overlay */
+.filter-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Modal Content Card */
+.filter-modal-content {
+    background: #ffffff;
+    width: 90%;
+    max-width: 480px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #0ee681;
+}
+
+.close-btn {
+    font-size: 24px;
+    font-weight: bold;
+    color: #666;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #000;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.filter-group {
+    margin-bottom: 22px;
+}
+
+.filter-group h4 {
+    margin: 0 0 10px;
+    font-size: 15px;
+    color: #333;
+}
+
+.price-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.price-inputs input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+}
+
+.rating-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.rating-btn {
+    background: #f0f2f5;
+    border: 1px solid #ddd;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.rating-btn.active,
+.rating-btn:hover {
+    background: #198754;
+    color: #ffffff;
+    border-color: #198754;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+}
+
+.reset-btn {
+    background: transparent;
+    border: 1px solid #ccc;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.apply-btn {
+    background: #198754;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.apply-btn:hover {
+    background: #146c43;
+}
 /* =========================
    GLOBAL FIX (overflow)
 ========================= */
@@ -386,6 +552,105 @@
 </style>
 
 <script>
+    // 1. Pass Products Array into Client JS Memory
+const rawProducts = <%- JSON.stringify(products) %>;
+let selectedMinRating = 0;
+
+// 2. Modal Toggle Functions
+function openFilterModal() {
+    document.getElementById('filterModal').style.display = 'flex';
+}
+
+function closeFilterModal() {
+    document.getElementById('filterModal').style.display = 'none';
+}
+
+// Close Modal when clicking outside content area
+window.onclick = function(event) {
+    const modal = document.getElementById('filterModal');
+    if (event.target === modal) {
+        closeFilterModal();
+    }
+};
+
+// 3. Rating Button Active Switcher
+function setRatingFilter(rating, btn) {
+    selectedMinRating = rating;
+    document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+// 4. Apply Filters Logic
+function applyFilters() {
+    const minPrice = parseFloat(document.getElementById('minPriceInput').value) || 0;
+    const maxPrice = parseFloat(document.getElementById('maxPriceInput').value) || Infinity;
+
+    const filteredList = rawProducts.filter(product => {
+        const matchesPrice = product.price >= minPrice && product.price <= maxPrice;
+        const matchesRating = product.rating >= selectedMinRating;
+        return matchesPrice && matchesRating;
+    });
+
+    renderFilteredProducts(filteredList);
+    closeFilterModal();
+}
+
+// 5. Reset Filters
+function resetFilters() {
+    document.getElementById('minPriceInput').value = '';
+    document.getElementById('maxPriceInput').value = '';
+    selectedMinRating = 0;
+    
+    document.querySelectorAll('.rating-btn').forEach((btn, index) => {
+        btn.classList.toggle('active', index === 0);
+    });
+
+    renderFilteredProducts(rawProducts);
+    closeFilterModal();
+}
+
+// 6. Grid Renderer
+function renderFilteredProducts(productsToDisplay) {
+    const container = document.getElementById('productsContainer');
+    
+    if (productsToDisplay.length === 0) {
+        container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666; font-size: 18px;">No products match your filter criteria.</div>`;
+        return;
+    }
+
+    const html = productsToDisplay.map(product => {
+        const isWishlisted = currentUser && currentUser.wishlist && currentUser.wishlist.includes(product._id);
+        const heartIcon = isWishlisted 
+            ? `<i class="fa-solid fa-heart" style="color: #e63946;"></i>` 
+            : `<i class="fa-regular fa-heart"></i>`;
+
+        return `
+            <div class="product-card">
+                <a href="/shopping/product/${product._id}" class="product-link">
+                    <div class="product-img">
+                        <img src="${product.image}" alt="${product.title}">
+                    </div>
+                    <div class="product-details">
+                        <h3>${product.title}</h3>
+                        <p class="description">${product.description}</p>
+                        <div class="rating">⭐ ${product.rating}</div>
+                        <div class="price">₹${product.price.toLocaleString("en-IN")}</div>
+                        <p class="category">${product.category}</p>
+                        <br>
+                        <button type="button" class="buy-now-btn" onclick="event.stopPropagation(); buyNow('${product._id}')" style="cursor: pointer; outline: none; border: none; border-radius: 10px; font-size: 16px; height: 35px; gap: 5px; width: 110px; display: flex; align-items: center; justify-content: center; background-color: #03045e; color: white;">
+                            <i class="fa-solid fa-cart-shopping"></i>Buy Now
+                        </button>
+                        <button type="button" class="wishlist-icon-btn" onclick="addToWishlist('${product._id}', this)">
+                            ${heartIcon}
+                        </button>
+                    </div>
+                </a>
+            </div>
+        `;
+    }).join('');
+
+    container.innerHTML = html;
+}
 // Safely pass session user
 const currentUser = JSON.parse('<%- JSON.stringify(user || null) %>');
 

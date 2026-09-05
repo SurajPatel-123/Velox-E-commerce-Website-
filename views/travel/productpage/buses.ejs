@@ -1,6 +1,6 @@
 <%- include("../../shopping/commonHeader/header") %>
 <%- include("../../shopping/commonHeader/navbar3") %>
-<hr>
+
 
 <div class="bus-travel-page">
 
@@ -8,20 +8,61 @@
     <div class="bus-header">
         <h2>🚌 Bus Tickets & Express Travel</h2>
         <p>Book comfortable, safe, and affordable bus journeys to your destination!</p>
+        <button type="button" class="open-filter-btn" onclick="openFilterModal()">
+            <i class="fa-solid fa-sliders"></i> Filters
+        </button>
+    </div>
+
+    <!-- FILTER MODAL -->
+    <div id="filterModal" class="filter-modal-overlay">
+        <div class="filter-modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-filter"></i> Filter Products</h3>
+                <span class="close-btn" onclick="closeFilterModal()">&times;</span>
+            </div>
+
+            <div class="modal-body">
+                <!-- Price Filters -->
+                <div class="filter-group">
+                    <h4>Price Range</h4>
+                    <div class="price-inputs">
+                        <input type="number" id="minPriceInput" placeholder="Min (₹)">
+                        <span>to</span>
+                        <input type="number" id="maxPriceInput" placeholder="Max (₹)">
+                    </div>
+                </div>
+
+                <!-- Star Rating Filters -->
+                <div class="filter-group">
+                    <h4>Minimum Rating</h4>
+                    <div class="rating-buttons">
+                        <button type="button" class="rating-btn active" data-rating="0" onclick="setRatingFilter(0, this)">All Ratings</button>
+                        <button type="button" class="rating-btn" data-rating="4" onclick="setRatingFilter(4, this)">4★ & above</button>
+                        <button type="button" class="rating-btn" data-rating="3" onclick="setRatingFilter(3, this)">3★ & above</button>
+                        <button type="button" class="rating-btn" data-rating="2" onclick="setRatingFilter(2, this)">2★ & above</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="reset-btn" onclick="resetFilters()">Reset All</button>
+                <button type="button" class="apply-btn" onclick="applyFilters()">Apply Filters</button>
+            </div>
+        </div>
     </div>
 
     <!-- MAIN CONTAINER -->
-    <div class="bus-container">
+    <div class="bus-container" id="productsContainer">
 
-        <% (beaches || products).forEach(bus => { %>
-            <div class="bus-card">
+        <% (beaches || products || []).forEach(bus => { %>
+            <div class="bus-card" data-id="<%= bus._id %>">
                 <a href="/travel/product/<%= bus._id %>" class="bus-link">
 
                     <!-- IMAGE CONTAINER WITH WISHLIST BUTTON -->
                     <div class="bus-img-wrapper">
                         <button 
                             type="button" 
-                            class="wishlist-icon-btn" 
+                            class="bus-card-wishlist" 
                             onclick="event.preventDefault(); event.stopPropagation(); toggleWishlist('<%= bus._id %>', this)"
                             aria-label="Save to Wishlist"
                         >
@@ -61,7 +102,7 @@
                         <div class="card-footer">
                             <div class="price-wrapper">
                                 <span class="price-label">Fare starts at</span>
-                                <div class="price">₹<%= bus.price.toLocaleString("en-IN") %></div>
+                                <div class="price">₹<%= bus.price ? bus.price.toLocaleString("en-IN") : '0' %></div>
                             </div>
 
                             <button type="button"
@@ -84,29 +125,187 @@
 
 <style>
 /* =========================
-   GLOBAL RESET
+   HEADER & FILTER BUTTON
 ========================= */
+.products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
+.open-filter-btn {
+    background: #0284c7;
+    color: #ffffff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s ease;
+}
+
+.open-filter-btn:hover {
+    background: #0369a1;
+}
+
+/* =========================
+   MODAL DIALOG
+========================= */
+.filter-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.filter-modal-content {
+    background: #ffffff;
+    width: 90%;
+    max-width: 480px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #0284c7;
+}
+
+.close-btn {
+    font-size: 24px;
+    font-weight: bold;
+    color: #666;
+    cursor: pointer;
+}
+
+.close-btn:hover {
+    color: #000;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.filter-group {
+    margin-bottom: 22px;
+}
+
+.filter-group h4 {
+    margin: 0 0 10px;
+    font-size: 15px;
+    color: #333;
+}
+
+.price-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.price-inputs input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+}
+
+.rating-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.rating-btn {
+    background: #f0f2f5;
+    border: 1px solid #ddd;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.rating-btn.active,
+.rating-btn:hover {
+    background: #0369a1;
+    color: #ffffff;
+    border-color: #0369a1;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: #f8f9fa;
+    border-top: 1px solid #eee;
+}
+
+.reset-btn {
+    background: transparent;
+    border: 1px solid #ccc;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.apply-btn {
+    background: #0284c7;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.apply-btn:hover {
+    background: #0369a1;
+}
+
+/* =========================
+   PAGE CONTAINER & LAYOUT
+========================= */
 .bus-travel-page,
 .bus-travel-page * {
     box-sizing: border-box;
 }
 
-/* =========================
-   PAGE CONTAINER
-========================= */
-
 .bus-travel-page {
     width: 100%;
     max-width: 100vw;
-    background: #f8fafc;
+    background: #f0f7ff;
     padding: 25px 30px;
     overflow-x: hidden;
 }
-
-/* =========================
-   PAGE HEADER
-========================= */
 
 .bus-header {
     margin: 0 0 30px 5px;
@@ -114,9 +313,9 @@
 
 .bus-header h2 {
     margin: 0;
-    font-size: 30px;
+    font-size: 32px;
     font-weight: 700;
-    color: #1e293b;
+    color: #0c4a6e;
 }
 
 .bus-header p {
@@ -124,10 +323,6 @@
     font-size: 15px;
     color: #0284c7;
 }
-
-/* =========================
-   GRID CONTAINER
-========================= */
 
 .bus-container {
     width: 100%;
@@ -139,19 +334,18 @@
 /* =========================
    BUS CARD
 ========================= */
-
 .bus-card {
     width: 100% !important;
     border-radius: 16px;
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     background: #ffffff;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #e0f2fe;
 }
 
 .bus-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 12px 28px rgba(2, 132, 199, 0.12);
+    box-shadow: 0 12px 28px rgba(2, 132, 199, 0.15);
 }
 
 .bus-link {
@@ -164,15 +358,14 @@
 }
 
 /* =========================
-   IMAGE & BADGES
+   IMAGE, BADGE & WISHLIST
 ========================= */
-
 .bus-img-wrapper {
     width: 100%;
-    height: 200px !important;
+    height: 220px !important;
     position: relative;
     overflow: hidden;
-    background: #f1f5f9;
+    background: #e2e8f0;
 }
 
 .bus-img-wrapper img {
@@ -183,14 +376,14 @@
 }
 
 .bus-card:hover .bus-img-wrapper img {
-    transform: scale(1.06);
+    transform: scale(1.08);
 }
 
 .badge-bus-type {
     position: absolute;
     bottom: 12px;
     left: 12px;
-    background: rgba(15, 23, 42, 0.8);
+    background: rgba(15, 23, 42, 0.75);
     backdrop-filter: blur(4px);
     color: #ffffff;
     font-size: 11px;
@@ -199,11 +392,8 @@
     border-radius: 20px;
 }
 
-/* =========================
-   WISHLIST BUTTON
-========================= */
-
-.wishlist-icon-btn {
+/* Scope wishlist button strictly inside the card image wrapper */
+.bus-img-wrapper .bus-card-wishlist {
     position: absolute;
     top: 12px;
     right: 12px;
@@ -225,12 +415,12 @@
     outline: none;
 }
 
-.wishlist-icon-btn:hover {
+.bus-img-wrapper .bus-card-wishlist:hover {
     background: #ffffff;
     color: #e63946;
 }
 
-.wishlist-icon-btn .active-heart {
+.bus-img-wrapper .bus-card-wishlist .active-heart {
     color: #e63946 !important;
     animation: pop 0.3s ease;
 }
@@ -242,9 +432,8 @@
 }
 
 /* =========================
-   BUS DETAILS
+   BUS DETAILS & FOOTER
 ========================= */
-
 .bus-details {
     width: 100%;
     padding: 18px;
@@ -261,23 +450,23 @@
     margin-bottom: 6px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
 }
 
 .bus-travel-page .bus-details h3 {
     margin: 0;
-    font-size: 16px;
+    font-size: 17px;
     font-weight: 700;
     line-height: 1.3;
     color: #0f172a;
-    min-height: 42px;
+    min-height: 44px;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
 .bus-travel-page .bus-details .description {
-    margin: 6px 0 10px 0;
+    margin: 8px 0 12px 0;
     font-size: 13px;
     line-height: 1.4;
     color: #64748b;
@@ -287,21 +476,22 @@
     min-height: 36px;
 }
 
-/* AMENITIES TAGS */
 .bus-amenities {
     display: flex;
-    gap: 6px;
     flex-wrap: wrap;
+    gap: 6px;
     margin-bottom: 12px;
 }
 
 .bus-amenities .tag {
-    font-size: 10px;
+    font-size: 11px;
     background: #f1f5f9;
     color: #475569;
     padding: 3px 8px;
-    border-radius: 6px;
-    font-weight: 500;
+    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .meta-info {
@@ -319,10 +509,6 @@
     font-weight: 400;
     font-size: 12px;
 }
-
-/* =========================
-   FOOTER & BUTTON
-========================= */
 
 .card-footer {
     margin-top: auto;
@@ -375,7 +561,6 @@
 /* =========================
    RESPONSIVE BREAKPOINTS
 ========================= */
-
 @media (max-width: 1200px) {
     .bus-travel-page .bus-container {
         grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
@@ -399,22 +584,148 @@
     }
 
     .bus-img-wrapper {
-        height: 180px !important;
+        height: 200px !important;
     }
 }
 </style>
 
 <script>
+// 1. Memory Setup
+const rawProducts = <%- JSON.stringify(beaches || products || []) %>;
 const currentUser = JSON.parse('<%- JSON.stringify(user || null) %>');
+let selectedMinRating = 0;
 
-// Travel Cart me Item add karke Cart Page redirect karne ke liye function
+// 2. Modal Controls
+function openFilterModal() {
+    document.getElementById('filterModal').style.display = 'flex';
+}
+
+function closeFilterModal() {
+    document.getElementById('filterModal').style.display = 'none';
+}
+
+window.onclick = function(event) {
+    const modal = document.getElementById('filterModal');
+    if (event.target === modal) {
+        closeFilterModal();
+    }
+};
+
+// 3. Rating Button Handler
+function setRatingFilter(rating, btn) {
+    selectedMinRating = rating;
+    document.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+
+// 4. Apply Filters
+function applyFilters() {
+    const minPrice = parseFloat(document.getElementById('minPriceInput').value) || 0;
+    const maxPrice = parseFloat(document.getElementById('maxPriceInput').value) || Infinity;
+
+    const filteredList = rawProducts.filter(product => {
+        const matchesPrice = product.price >= minPrice && product.price <= maxPrice;
+        const matchesRating = product.rating >= selectedMinRating;
+        return matchesPrice && matchesRating;
+    });
+
+    renderFilteredProducts(filteredList);
+    closeFilterModal();
+}
+
+// 5. Reset Filters
+function resetFilters() {
+    document.getElementById('minPriceInput').value = '';
+    document.getElementById('maxPriceInput').value = '';
+    selectedMinRating = 0;
+    
+    document.querySelectorAll('.rating-btn').forEach((btn, index) => {
+        btn.classList.toggle('active', index === 0);
+    });
+
+    renderFilteredProducts(rawProducts);
+    closeFilterModal();
+}
+
+// 6. Bus Grid Renderer
+function renderFilteredProducts(productsToDisplay) {
+    const container = document.getElementById('productsContainer');
+    
+    if (productsToDisplay.length === 0) {
+        container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666; font-size: 18px;">No buses match your filter criteria.</div>`;
+        return;
+    }
+
+    const html = productsToDisplay.map(bus => {
+        const isWishlisted = currentUser && currentUser.wishlist && currentUser.wishlist.includes(bus._id);
+        const heartIcon = isWishlisted 
+            ? `<i class="fa-solid fa-heart active-heart"></i>` 
+            : `<i class="fa-regular fa-heart"></i>`;
+
+        return `
+            <div class="bus-card" data-id="${bus._id}">
+                <a href="/travel/product/${bus._id}" class="bus-link">
+                    <div class="bus-img-wrapper">
+                        <button 
+                            type="button" 
+                            class="bus-card-wishlist" 
+                            onclick="event.preventDefault(); event.stopPropagation(); toggleWishlist('${bus._id}', this)"
+                            aria-label="Save to Wishlist"
+                        >
+                            ${heartIcon}
+                        </button>
+                        <img src="${bus.image}" alt="${bus.title}" loading="lazy">
+                        <span class="badge-bus-type">${bus.busType || 'AC Sleeper / Seater'}</span>
+                    </div>
+
+                    <div class="bus-details">
+                        <div class="bus-route">
+                            <i class="fa-solid fa-bus-simple"></i> ${bus.location || bus.route || 'Express Service'}
+                        </div>
+
+                        <h3>${bus.title}</h3>
+
+                        <p class="description">${bus.description}</p>
+
+                        <div class="bus-amenities">
+                            <span class="tag"><i class="fa-solid fa-wifi"></i> WiFi</span>
+                            <span class="tag"><i class="fa-solid fa-plug"></i> Charging Point</span>
+                            <span class="tag"><i class="fa-solid fa-bottle-water"></i> Water</span>
+                        </div>
+
+                        <div class="meta-info">
+                            <div class="rating">
+                                ⭐ ${bus.rating} <span class="reviews">(${bus.reviewsCount || '80+'} reviews)</span>
+                            </div>
+                        </div>
+
+                        <div class="card-footer">
+                            <div class="price-wrapper">
+                                <span class="price-label">Fare starts at</span>
+                                <div class="price">₹${bus.price ? bus.price.toLocaleString("en-IN") : '0'}</div>
+                            </div>
+
+                            <button type="button"
+                                class="book-now-btn"
+                                onclick="event.preventDefault(); event.stopPropagation(); addToCart('${bus._id}')">  
+                                <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        `;
+    }).join('');
+
+    container.innerHTML = html;
+}
+
+// 7. Cart Handler
 async function addToCart(busId) {
     try {
         const response = await fetch('/travel/veloxTravel/travelCart/add', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ productId: busId, quantity: 1 })
         });
 
@@ -430,6 +741,7 @@ async function addToCart(busId) {
     }
 }
 
+// 8. Wishlist Handler
 async function toggleWishlist(busId, btnElement) {
     if (!currentUser) {
         alert("Please login to save buses.");

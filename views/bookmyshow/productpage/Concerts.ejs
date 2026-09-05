@@ -1,11 +1,12 @@
 <%- include("../../shopping/commonHeader/header") %>
 <%- include("../../shopping/commonHeader/navbar4") %>
-<hr>
+
 
 <% 
-  // Defensive check: Falls back to 'concerts', 'activities', 'products', or an empty array
+  // Defensive check: Falls back across common concert/event variables or an empty array
   const concertItems = (typeof concerts !== 'undefined' && Array.isArray(concerts)) ? concerts : 
                        (typeof activities !== 'undefined' && Array.isArray(activities)) ? activities : 
+                       (typeof shows !== 'undefined' && Array.isArray(shows)) ? shows : 
                        (typeof products !== 'undefined' && Array.isArray(products)) ? products : []; 
 %>
 
@@ -17,17 +18,79 @@
         <p>Experience the music live! Book tickets for top artists, band tours, EDM nights, and music festivals.</p>
     </div>
 
+    <!-- FILTER & SEARCH BAR SECTION -->
+    <div class="filter-section">
+        <form id="filterForm" class="filter-wrapper" onsubmit="event.preventDefault(); applyFilters();">
+            
+            <!-- Search Bar -->
+            <div class="filter-group search-group">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Search by artist, tour, or venue..." 
+                    onkeyup="applyFilters()"
+                >
+            </div>
+
+            <!-- Category / Genre Filter -->
+            <div class="filter-group">
+                <select id="categoryFilter" onchange="applyFilters()">
+                    <option value="">All Music Genres</option>
+                    <option value="EDM">EDM & DJ Nights</option>
+                    <option value="Rock">Rock & Metal</option>
+                    <option value="Pop">Pop Tours</option>
+                    <option value="Classical">Classical & Sufi</option>
+                    <option value="Bollywood">Bollywood Live</option>
+                </select>
+            </div>
+
+            <!-- Location Filter -->
+            <div class="filter-group">
+                <select id="locationFilter" onchange="applyFilters()">
+                    <option value="">All Locations</option>
+                    <option value="Mumbai">Mumbai</option>
+                    <option value="Delhi">Delhi NCR</option>
+                    <option value="Bengaluru">Bengaluru</option>
+                    <option value="Goa">Goa</option>
+                    <option value="Pune">Pune</option>
+                </select>
+            </div>
+
+            <!-- Max Price Filter -->
+            <div class="filter-group">
+                <select id="priceFilter" onchange="applyFilters()">
+                    <option value="">Any Price</option>
+                    <option value="999">Under ₹999</option>
+                    <option value="2499">Under ₹2,499</option>
+                    <option value="4999">Under ₹4,999</option>
+                </select>
+            </div>
+
+            <!-- Reset Button -->
+            <button type="button" class="reset-filter-btn" onclick="resetFilters()">
+                <i class="fa-solid fa-rotate-right"></i> Reset
+            </button>
+        </form>
+    </div>
+
     <!-- MAIN CONTAINER -->
-    <div class="concert-container">
+    <div class="concert-container" id="concertContainer">
 
         <% if (concertItems.length === 0) { %>
-            <div style="grid-column: 1 / -1; text-align: center; padding: 50px 20px;">
+            <div class="no-results-box">
                 <h3 style="color: #64748b;">No live concerts available right now.</h3>
                 <p style="color: #94a3b8;">Please check back later or explore other entertainment categories!</p>
             </div>
         <% } else { %>
             <% concertItems.forEach(concert => { %>
-                <div class="concert-card">
+                <div 
+                    class="concert-card"
+                    data-title="<%= (concert.title || '').toLowerCase() %>"
+                    data-category="<%= (concert.category || concert.genre || 'Live Music').toLowerCase() %>"
+                    data-location="<%= (concert.location || concert.venue || '').toLowerCase() %>"
+                    data-price="<%= concert.price || 0 %>"
+                >
                     <a href="/bookmyshow/product/<%= concert._id %>" class="concert-link">
 
                         <!-- IMAGE CONTAINER WITH WISHLIST BUTTON -->
@@ -84,6 +147,12 @@
             <% }) %>
         <% } %>
 
+        <!-- Dynamic Empty Search Result State -->
+        <div id="noMatchBox" class="no-results-box" style="display: none;">
+            <h3 style="color: #64748b;">No matching live concerts found.</h3>
+            <p style="color: #94a3b8;">Try adjusting your filters or search keywords.</p>
+        </div>
+
     </div>
 
 </div>
@@ -107,7 +176,7 @@
 .concert-page {
     width: 100%;
     max-width: 100vw;
-    background: #f4f7f4; /* Electric Violet Soft Background */
+    background: #f5f3ff; /* Electric Violet Soft Background */
     padding: 25px 30px;
     overflow-x: hidden;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -118,7 +187,7 @@
 ========================= */
 
 .concert-header {
-    margin: 0 0 30px 5px;
+    margin: 0 0 20px 5px;
 }
 
 .concert-header h2 {
@@ -132,6 +201,104 @@
     margin: 8px 0 0;
     font-size: 15px;
     color: #6d28d9;
+}
+
+/* =========================
+   FILTER BAR
+========================= */
+
+.filter-section {
+    background: #ffffff;
+    padding: 16px 20px;
+    border-radius: 14px;
+    border: 1px solid #ddd6fe;
+    box-shadow: 0 4px 14px rgba(109, 40, 217, 0.05);
+    margin-bottom: 25px;
+}
+
+.filter-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 160px;
+}
+
+.search-group {
+    flex: 2;
+    min-width: 240px;
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.search-group input {
+    width: 100%;
+    padding: 10px 12px 10px 38px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    color: #1e293b;
+    transition: border-color 0.2s ease;
+}
+
+.search-group input:focus {
+    border-color: #6d28d9;
+}
+
+.filter-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    color: #334155;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.filter-group select:focus {
+    border-color: #6d28d9;
+}
+
+.reset-filter-btn {
+    padding: 10px 16px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #64748b;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.reset-filter-btn:hover {
+    background: #f1f5f9;
+    color: #6d28d9;
+}
+
+.no-results-box {
+    grid-column: 1 / -1; 
+    text-align: center; 
+    padding: 50px 20px;
 }
 
 /* =========================
@@ -383,6 +550,14 @@
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         gap: 16px;
     }
+
+    .filter-group {
+        min-width: 45%;
+    }
+
+    .search-group {
+        min-width: 100%;
+    }
 }
 
 @media (max-width: 480px) {
@@ -393,14 +568,61 @@
     .concert-img-wrapper {
         height: 200px !important;
     }
+
+    .filter-group {
+        min-width: 100%;
+    }
 }
 </style>
 
 <script>
-const currentUser = JSON.parse('<%- JSON.stringify(user || null) %>');
+const currentUser = <%- JSON.stringify(typeof user !== 'undefined' ? user : null) %>;
 
 function bookNow(concertId) {
     window.location.href = `/bookmyshow/product/${concertId}`;
+}
+
+// CLIENT-SIDE FILTERING LOGIC
+function applyFilters() {
+    const searchValue = document.getElementById('searchInput').value.toLowerCase().trim();
+    const categoryValue = document.getElementById('categoryFilter').value.toLowerCase();
+    const locationValue = document.getElementById('locationFilter').value.toLowerCase();
+    const priceValue = document.getElementById('priceFilter').value;
+
+    const cards = document.querySelectorAll('.concert-card');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+        const title = card.getAttribute('data-title') || '';
+        const category = card.getAttribute('data-category') || '';
+        const location = card.getAttribute('data-location') || '';
+        const price = parseFloat(card.getAttribute('data-price')) || 0;
+
+        const matchesSearch = title.includes(searchValue);
+        const matchesCategory = !categoryValue || category.includes(categoryValue);
+        const matchesLocation = !locationValue || location.includes(locationValue);
+        const matchesPrice = !priceValue || price <= parseFloat(priceValue);
+
+        if (matchesSearch && matchesCategory && matchesLocation && matchesPrice) {
+            card.style.display = 'block';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    const noMatchBox = document.getElementById('noMatchBox');
+    if (noMatchBox) {
+        noMatchBox.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+}
+
+function resetFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('categoryFilter').value = '';
+    document.getElementById('locationFilter').value = '';
+    document.getElementById('priceFilter').value = '';
+    applyFilters();
 }
 
 async function toggleWishlist(concertId, btnElement) {

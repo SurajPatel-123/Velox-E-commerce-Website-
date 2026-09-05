@@ -1,6 +1,6 @@
 <%- include("../../shopping/commonHeader/header") %>
 <%- include("../../shopping/commonHeader/navbar4") %>
-<hr>
+
 
 <% 
   // Defensive check: Falls back to 'movies', 'activities', 'products', or an empty array
@@ -17,17 +17,79 @@
         <p>Catch the latest blockbusters, indie cinema, and premieres in theaters near you!</p>
     </div>
 
+    <!-- FILTER & SEARCH BAR SECTION -->
+    <div class="filter-section">
+        <form id="filterForm" class="filter-wrapper" onsubmit="event.preventDefault(); applyFilters();">
+            
+            <!-- Search Bar -->
+            <div class="filter-group search-group">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Search by title, genre, or actor..." 
+                    onkeyup="applyFilters()"
+                >
+            </div>
+
+            <!-- Genre / Format Filter -->
+            <div class="filter-group">
+                <select id="categoryFilter" onchange="applyFilters()">
+                    <option value="">All Genres / Formats</option>
+                    <option value="Action">Action & Adventure</option>
+                    <option value="Drama">Drama & Romance</option>
+                    <option value="Comedy">Comedy</option>
+                    <option value="Sci-Fi">Sci-Fi & Fantasy</option>
+                    <option value="IMAX">IMAX / 3D</option>
+                </select>
+            </div>
+
+            <!-- Language Filter -->
+            <div class="filter-group">
+                <select id="languageFilter" onchange="applyFilters()">
+                    <option value="">All Languages</option>
+                    <option value="English">English</option>
+                    <option value="Hindi">Hindi</option>
+                    <option value="Tamil">Tamil</option>
+                    <option value="Telugu">Telugu</option>
+                    <option value="Malayalam">Malayalam</option>
+                </select>
+            </div>
+
+            <!-- Max Price Filter -->
+            <div class="filter-group">
+                <select id="priceFilter" onchange="applyFilters()">
+                    <option value="">Any Price</option>
+                    <option value="200">Under ₹200</option>
+                    <option value="350">Under ₹350</option>
+                    <option value="500">Under ₹500</option>
+                </select>
+            </div>
+
+            <!-- Reset Button -->
+            <button type="button" class="reset-filter-btn" onclick="resetFilters()">
+                <i class="fa-solid fa-rotate-right"></i> Reset
+            </button>
+        </form>
+    </div>
+
     <!-- MAIN CONTAINER -->
-    <div class="movie-container">
+    <div class="movie-container" id="movieContainer">
 
         <% if (movieItems.length === 0) { %>
-            <div style="grid-column: 1 / -1; text-align: center; padding: 50px 20px;">
+            <div class="no-results-box">
                 <h3 style="color: #64748b;">No movies currently available.</h3>
                 <p style="color: #94a3b8;">Please check back later or explore other entertainment categories!</p>
             </div>
         <% } else { %>
             <% movieItems.forEach(movie => { %>
-                <div class="movie-card">
+                <div 
+                    class="movie-card"
+                    data-title="<%= (movie.title || '').toLowerCase() %>"
+                    data-category="<%= (movie.genre || movie.category || '2D / 3D / IMAX').toLowerCase() %>"
+                    data-language="<%= (movie.language || movie.languages || 'English / Hindi').toLowerCase() %>"
+                    data-price="<%= movie.price || 150 %>"
+                >
                     <a href="/bookmyshow/product/<%= movie._id %>" class="movie-link">
 
                         <!-- IMAGE CONTAINER WITH WISHLIST BUTTON -->
@@ -73,7 +135,7 @@
 
                                 <button type="button"
                                     class="book-now-btn"
-                                    onclick="event.preventDefault(); event.stopPropagation(); bookNow('<%= movie._id %>')">  
+                                    onclick="event.preventDefault(); event.stopPropagation(); bookNow('<%= movie._id %>')"> 
                                     <i class="fa-solid fa-film"></i> Book Tickets
                                 </button>
                             </div>
@@ -83,6 +145,12 @@
                 </div>
             <% }) %>
         <% } %>
+
+        <!-- Dynamic Empty Search Result State -->
+        <div id="noMatchBox" class="no-results-box" style="display: none;">
+            <h3 style="color: #64748b;">No matching movies found.</h3>
+            <p style="color: #94a3b8;">Try adjusting your search criteria or language options.</p>
+        </div>
 
     </div>
 
@@ -107,7 +175,7 @@
 .movie-page {
     width: 100%;
     max-width: 100vw;
-    background: #f4f7f4; /* Soft Cinema Red Accent Background */
+    background: #f4f7f4;
     padding: 25px 30px;
     overflow-x: hidden;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -118,7 +186,7 @@
 ========================= */
 
 .movie-header {
-    margin: 0 0 30px 5px;
+    margin: 0 0 20px 5px;
 }
 
 .movie-header h2 {
@@ -132,6 +200,104 @@
     margin: 8px 0 0;
     font-size: 15px;
     color: #dc2626;
+}
+
+/* =========================
+   FILTER BAR
+========================= */
+
+.filter-section {
+    background: #ffffff;
+    padding: 16px 20px;
+    border-radius: 14px;
+    border: 1px solid #fecaca;
+    box-shadow: 0 4px 14px rgba(220, 38, 38, 0.05);
+    margin-bottom: 25px;
+}
+
+.filter-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 160px;
+}
+
+.search-group {
+    flex: 2;
+    min-width: 240px;
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.search-group input {
+    width: 100%;
+    padding: 10px 12px 10px 38px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    color: #1e293b;
+    transition: border-color 0.2s ease;
+}
+
+.search-group input:focus {
+    border-color: #dc2626;
+}
+
+.filter-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    color: #334155;
+    background-color: #ffffff;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.filter-group select:focus {
+    border-color: #dc2626;
+}
+
+.reset-filter-btn {
+    padding: 10px 16px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    color: #64748b;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.reset-filter-btn:hover {
+    background: #f1f5f9;
+    color: #dc2626;
+}
+
+.no-results-box {
+    grid-column: 1 / -1; 
+    text-align: center; 
+    padding: 50px 20px;
 }
 
 /* =========================
@@ -383,6 +549,14 @@
         grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         gap: 16px;
     }
+
+    .filter-group {
+        min-width: 45%;
+    }
+
+    .search-group {
+        min-width: 100%;
+    }
 }
 
 @media (max-width: 480px) {
@@ -393,14 +567,62 @@
     .movie-img-wrapper {
         height: 200px !important;
     }
+
+    .filter-group {
+        min-width: 100%;
+    }
 }
 </style>
 
 <script>
-const currentUser = JSON.parse('<%- JSON.stringify(user || null) %>');
+// Safe JavaScript object parsing to prevent syntax runtime errors
+const currentUser = <%- JSON.stringify(typeof user !== 'undefined' ? user : null) %>;
 
 function bookNow(movieId) {
     window.location.href = `/bookmyshow/product/${movieId}`;
+}
+
+// CLIENT-SIDE FILTERING LOGIC
+function applyFilters() {
+    const searchValue = document.getElementById('searchInput').value.toLowerCase().trim();
+    const categoryValue = document.getElementById('categoryFilter').value.toLowerCase();
+    const languageValue = document.getElementById('languageFilter').value.toLowerCase();
+    const priceValue = document.getElementById('priceFilter').value;
+
+    const cards = document.querySelectorAll('.movie-card');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+        const title = card.getAttribute('data-title') || '';
+        const category = card.getAttribute('data-category') || '';
+        const language = card.getAttribute('data-language') || '';
+        const price = parseFloat(card.getAttribute('data-price')) || 0;
+
+        const matchesSearch = title.includes(searchValue);
+        const matchesCategory = !categoryValue || category.includes(categoryValue);
+        const matchesLanguage = !languageValue || language.includes(languageValue);
+        const matchesPrice = !priceValue || price <= parseFloat(priceValue);
+
+        if (matchesSearch && matchesCategory && matchesLanguage && matchesPrice) {
+            card.style.display = 'block';
+            visibleCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    const noMatchBox = document.getElementById('noMatchBox');
+    if (noMatchBox) {
+        noMatchBox.style.display = visibleCount === 0 ? 'block' : 'none';
+    }
+}
+
+function resetFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('categoryFilter').value = '';
+    document.getElementById('languageFilter').value = '';
+    document.getElementById('priceFilter').value = '';
+    applyFilters();
 }
 
 async function toggleWishlist(movieId, btnElement) {
